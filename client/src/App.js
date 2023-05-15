@@ -8,7 +8,7 @@ function App() {
   
 useEffect(() => {
   async function fetchData() {
-    const url = "https://server-dot-storied-galaxy-386808.wl.r.appspot.com";
+    const url = "/server";
 
           const res = await axios(url);
           console.log("Health status from backend---",res.data);
