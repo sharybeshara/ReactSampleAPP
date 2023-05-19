@@ -8,7 +8,7 @@ class KidsController {
         this.db = connect();
         
     }
-
+    
     async getKids() {
         
         try {
