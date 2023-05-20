@@ -1,22 +1,26 @@
 import logo from './logo.svg';
 import './App.css';
-import axios from 'axios';
+// import axios from 'axios';
 import React, { useState, useEffect} from 'react'
 
 function App() {
-  const [data, setData] = useState([]);
+  const [kids, setKids] = useState([]);
   
 useEffect(() => {
-  async function fetchData() {
-    const url = "/server";
-
-          const res = await axios(url);
-          console.log("Health status from backend---",res.data);
-    setData(res.data);
-  }
-
-  fetchData();
+  getKids();
 }, []);
+
+function getKids() {
+  fetch('http://localhost:8080/kids')
+    .then(response => {
+      return response.text();
+    })
+    .then(data => {
+      setKids(data);
+    });
+}
+
+
   return (
     <div className="App">
       <header className="App-header">
@@ -31,7 +35,7 @@ useEffect(() => {
           rel="noopener noreferrer"
         >
           Learn React
-          {data}
+          {kids}
         </a>
 
       </header>
