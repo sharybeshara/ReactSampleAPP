@@ -1,8 +1,8 @@
 module.exports = (sequelize, DataTypes, Model) => {
 
-    class Kids extends Model {}
+    class Users extends Model {}
 
-    Kids.init({
+    Users.init({
         // Model attributes are defined here
         id: {
             type: DataTypes.INTEGER,
@@ -16,15 +16,18 @@ module.exports = (sequelize, DataTypes, Model) => {
         email: {
           type: DataTypes.STRING,
         },
+        user_role: {
+          type: DataTypes.STRING,
+        },
         total_points: {
             type: DataTypes.INTEGER,
         }
       }, {
         // Other model options go here
         sequelize, // We need to pass the connection instance
-        modelName: 'kids', // We need to choose the model name
+        modelName: 'users', // We need to choose the model name
         timestamps: false
       });
       
-      return Kids;
+      return Users;
 }

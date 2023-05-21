@@ -23,7 +23,7 @@ const connect = () => {
     const db = {};
     db.Sequelize = Sequelize;
     db.sequelize = sequelize;
-    db.kids = require("../model/kid.model")(sequelize, DataTypes, Model);
+    db.users = require("../model/user_model")(sequelize, DataTypes, Model);
 
     return db;
 

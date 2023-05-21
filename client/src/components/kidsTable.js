@@ -12,6 +12,7 @@ import { useState} from 'react'
 
 export default function KidsTable(props) {
   const [searchedVal, setSearchedVal] = useState("");
+  
   const onChangeSearch = (event) => {
     console.log(event.target.value);
     setSearchedVal( event.target.value);

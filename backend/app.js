@@ -3,41 +3,45 @@
 // [START gae_node_request_example]
 const express = require('express');
 const cors = require('cors');
+const bodyParser = require('body-parser');
 const app = express();
+
 // const createTcpPool = require('./db/connect-tcp.js');
-const kidController = require('./kid_controller')
+const userController = require('./user_controller')
 require('dotenv').config()
 
-// const createPool = async () => {
-   
-//     const config = {pool: {}};
-  
-//     config.pool.max = 5;
-//     config.pool.min = 5;
-//     config.pool.acquireTimeoutMillis = 60000; // 60 seconds
-//     config.pool.createTimeoutMillis = 30000; // 30 seconds
-//     config.pool.idleTimeoutMillis = 600000; // 10 minutes
-//     config.pool.createRetryIntervalMillis = 200; // 0.2 seconds
-//     if (process.env.INSTANCE_HOST) {
-//       // Use a TCP socket when INSTANCE_HOST (e.g., 127.0.0.1) is defined
-//       return createTcpPool(config);
-//     } else if (process.env.INSTANCE_UNIX_SOCKET) {
-//       // Use a Unix socket when INSTANCE_UNIX_SOCKET (e.g., /cloudsql/proj:region:instance) is defined.
-//       return createUnixSocketPool(config);
-//     } else {
-//       throw 'One of INSTANCE_HOST or INSTANCE_UNIX_SOCKET` is required.';
-//     }
-//   };
-//   let pool = createPool();
- 
-
+const adminPassword ="#Summer23#"
 app.use(cors());
+app.use(bodyParser.json());
 app.get('/', (req, res) => {
   res.status(200).send('Hello, world!').end();
 });
 app.get('/kids', async (req, res) => {
-    kidController.getKids().then(data => res.json(data));
+  userController.getKids().then(data => res.json(data));
+});
+app.get('/users', async (req, res) => {
+  userController.getUsers().then(data => res.json(data));
+});
+app.use('/login', (req, res) => {
+  res.send({
+    token: 'test123'
   });
+});
+app.use('/register', (req, res) => {
+  console.log(req.body);
+  if(req.body.adminPassword == adminPassword){
+    console.log("admin");
+    userController.addUser({name:req.body.name, email: req.body.email, password: req.body.password, user_role:"admin"});
+
+  }
+  else{
+    console.log("amshdmin");
+    userController.addUser({name:req.body.name, email: req.body.email, password: req.body.password, user_role:"kid"});
+  }
+  res.send({
+    token: 'test123'
+  });
+});
 
 //   app.get('/api/tasks', (req, res) => {
 //     taskController.getTasks().then(data => res.json(data));
