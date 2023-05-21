@@ -1,4 +1,5 @@
 const { connect } = require('./db/db.config');
+const bcrypt = require('bcrypt');
 
 class UsersController {
 
@@ -37,6 +38,36 @@ class UsersController {
             return [];
           }
     }
+    async findUser(email){
+        const user = await this.db.users.findOne({ where: { email } });
+        if(user)
+            return true;
+        else
+            return false;
+    }
+
+    async getUser(email, password){
+        try {
+            const user = await this.db.users.findOne({ where: { email } });
+            console.log(user);
+            if (!user) {
+                console.error('Invalid email or password');
+              return null;
+            }
+        
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+        
+            if (!isPasswordValid) {
+                console.error('Invalid email or password');
+              return null;
+            }
+        
+            return user;
+          } catch (error) {
+            console.error(error);
+           return null;
+          }
+    }
 
     async addUser(user) {
         let data = {};
@@ -44,6 +75,7 @@ class UsersController {
             data = await this.db.users.create(user);
         } catch(err) {
             console.error('Error::' + err);
+            return null;
         }
         return data;
     }
@@ -58,7 +90,8 @@ class UsersController {
                 }
             });
         } catch(err) {
-            logger.error('Error::' + err);
+            console.error('Error::' + err);
+            throw new Error("can't update user");
         }
         return data;
     }
@@ -72,7 +105,7 @@ class UsersController {
                 }
             });
         } catch(err) {
-            logger.error('Error::' + err);
+            console.error('Error::' + err);
         }
         return data;
         return {status: `${data.deletedCount > 0 ? true : false}`};

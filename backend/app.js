@@ -2,6 +2,7 @@
 
 // [START gae_node_request_example]
 const express = require('express');
+const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
@@ -22,25 +23,42 @@ app.get('/kids', async (req, res) => {
 app.get('/users', async (req, res) => {
   userController.getUsers().then(data => res.json(data));
 });
-app.use('/login', (req, res) => {
-  res.send({
-    token: 'test123'
-  });
+app.use('/login', async(req, res) => {
+  const { email, password } = req.body;
+  const token = jwt.sign({email}, "secret");
+  let user = await userController.getUser(email, password);
+  if(user){
+    res.send({
+        token: token
+      });
+  }else{
+    res.status(400).send('Invalid email or password');
+  }
+
+  
 });
-app.use('/register', (req, res) => {
-  console.log(req.body);
+app.use('/register', async(req, res) => {
+  const {name, email, password } = req.body;
+  if (!(email && password && name)) {
+    res.status(400).send("All input is required");
+  }
+
+  if ( await userController.findUser(email)) {
+    return res.status(409).send("User Already Exist. Please Login");
+  }
+
+  const token = jwt.sign({email}, "secret");
   if(req.body.adminPassword == adminPassword){
-    console.log("admin");
-    userController.addUser({name:req.body.name, email: req.body.email, password: req.body.password, user_role:"admin"});
+   userController.addUser({name:req.body.name, email: req.body.email, password: req.body.password, user_role:"admin"})
+   .then(response => {res.send({token: token});})
+   .catch(error => {res.status(500).send(error);});
 
   }
   else{
-    console.log("amshdmin");
-    userController.addUser({name:req.body.name, email: req.body.email, password: req.body.password, user_role:"kid"});
+    userController.addUser({name:req.body.name, email: req.body.email, password: req.body.password, user_role:"kid"})
+    .then(response => {res.send({token: token});})
+    .catch(error => {res.status(500).send(error);});
   }
-  res.send({
-    token: 'test123'
-  });
 });
 
 //   app.get('/api/tasks', (req, res) => {

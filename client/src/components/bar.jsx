@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
 import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -51,7 +52,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchAppBar(props) {
+export default function SearchAppBar({onChangeSearch, logout}) {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
@@ -73,6 +74,7 @@ export default function SearchAppBar(props) {
           >
             Summer Camp 2023
           </Typography>
+          
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -80,9 +82,11 @@ export default function SearchAppBar(props) {
             <StyledInputBase
               placeholder="Search…"
               inputProps={{ 'aria-label': 'search' }}
-              onChange={props.onChange}
+              onChange={onChangeSearch}
             />
           </Search>
+
+          <LogoutIcon onClick={logout}/>
         </Toolbar>
       </AppBar>
     </Box>

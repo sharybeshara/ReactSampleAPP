@@ -1,3 +1,4 @@
+const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes, Model) => {
 
     class Users extends Model {}
@@ -21,6 +22,15 @@ module.exports = (sequelize, DataTypes, Model) => {
         },
         total_points: {
             type: DataTypes.INTEGER,
+        },
+        password:{
+          type: DataTypes.STRING,
+          allowNull: false,
+          set(value) {
+            const salt = bcrypt.genSaltSync(10);
+            const hash = bcrypt.hashSync(value, salt);
+            this.setDataValue('password', hash);
+          }
         }
       }, {
         // Other model options go here
