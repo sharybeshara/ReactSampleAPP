@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes, Model) => {
           type: DataTypes.STRING,
           allowNull: false
         },
+        email: {
+          type: DataTypes.STRING,
+        },
         total_points: {
             type: DataTypes.INTEGER,
         }
