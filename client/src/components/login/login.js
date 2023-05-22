@@ -10,7 +10,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
 import './login.css';
 
-export default function Login({ setToken, register, setRegister }) {
+export default function Login({ setToken, register, setRegister, setUser }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState();
@@ -49,23 +49,32 @@ export default function Login({ setToken, register, setRegister }) {
     e.preventDefault();
     // setEmailError(false)
     // setPasswordError(false)
-    let token = ""; 
-    setToken(token);
+   
+    let result = null; 
     if (!register) {
-    token = await  loginUser({
+    result = await  loginUser({
       email,
       password
     });
   }
     else{
-      token = await registerUser({
+      result = await registerUser({
       name,  
       email,
       password,
       adminPassword
       });
     }
-      setToken(token);
+    // if(result){
+    //   console.log(result);
+    //   token = result.token;
+    //   user = result.user;
+
+      
+    // }
+    setToken(result?.token);
+    setUser(result?.user);
+      
   }
 
   return(

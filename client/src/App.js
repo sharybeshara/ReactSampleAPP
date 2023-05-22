@@ -1,33 +1,26 @@
 import './App.css';
 // import axios from 'axios';
-import React, { useState} from 'react';
+import React from 'react';
 import KidsTable from './components/kidsTable';
+import KidView from './components/kidView';
 import Login from './components/login/login';
 import useToken from './useToken';
 
 function App() {
-  const { token, setToken } = useToken('');
-  const [register, setRegister] = useState(false);
-
-  const clickRegister = (registerValue) => {
-    console.log(registerValue);
-    setRegister(registerValue);
-  };
-
+  const { token, setToken, user, setUser, register, setRegister} = useToken();
+  
   function logout(){
     console.log("here");
     setToken("");
+    setUser(null);
     setRegister(false);
-  }
- 
-
-  if(!token) {
-    return <Login setToken={setToken} register={register} setRegister={clickRegister}/>
   }
 
   return (
     <div>
-      <KidsTable  logout={logout} />
+      {!token &&  <Login setToken={setToken} register={register} setRegister={setRegister} setUser={setUser}/>} 
+      {user && user.user_role ==="admin" && <KidsTable  logout={logout} />}
+      {user && user.user_role ==="kid" && <KidView kid={user} logout={logout}/>}
     </div>
   );
 }
