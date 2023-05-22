@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import Switch from '@mui/material/Switch';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormGroup from '@mui/material/FormGroup';
+import Alert from '@mui/material/Alert';
 import './login.css';
 
 export default function Login({ setToken, register, setRegister, setUser }) {
@@ -16,6 +17,8 @@ export default function Login({ setToken, register, setRegister, setUser }) {
   const [password, setPassword] = useState();
   const [adminPassword, setAdminPassword] = useState();
   const [error, setError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   // const [emailError, setEmailError] = useState(false)
   // const [passwordError, setPasswordError] = useState(false)
   const [admin, setAdmin] = useState(false);
@@ -30,6 +33,7 @@ export default function Login({ setToken, register, setRegister, setUser }) {
     }).then(data => data.json())
       .catch(error => {
           setError(true);
+          setErrorMessage(error.toString()+"at login");
       });
    }
    async function registerUser(credentials) {
@@ -79,6 +83,7 @@ export default function Login({ setToken, register, setRegister, setUser }) {
 
   return(
     <div className="login-wrapper">
+    {error &&  <Alert severity="error" >{errorMessage}</Alert>}
     <Box
       component="form"
       sx={{

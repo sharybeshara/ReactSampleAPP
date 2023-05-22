@@ -27,7 +27,6 @@ export default function AddActionDialog({ isOpen, onClose, kid_id}) {
   };
 
   const handleAddAction = async() => {
-    // onAdd(selectedAction, points);
     await addAction();
     setSelectedAction(actions[0]);
     setPoints('');

@@ -11,12 +11,13 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import {useEffect, useState} from 'react';
 import AddActionDialog from './addAction';
 import KidView from './kidView';
+import {Dialog} from '@mui/material';
 
 export default function KidsTable({logout}) {
   const [searchedVal, setSearchedVal] = useState("");
   const [kids, setKids] = useState([]);
   const [addActionDialogOpen, setAddActionDialogOpen] = useState(false);
-  const [selectedRow, setSelectedRow] = useState(0);
+  const [selectedRow, setSelectedRow] = useState({});
   const [showKidView, setShowKidView] = useState(false);
 
   const onChangeSearch = (event) => {
@@ -38,12 +39,12 @@ export default function KidsTable({logout}) {
       });
       
   }
- 
-  // const handleAddAction = (action, comingPoints) => {
-  //   const newAction = { ...action, comingPoints: parseInt(comingPoints) };
-  //   setActions([...actions, newAction]);
-  //   setPoints(points+comingPoints);
-  // };
+    async function onClose (){
+      await getKids();
+      setAddActionDialogOpen(false);
+      setShowKidView(false);
+      
+    }
   
   return (
     <>
@@ -82,8 +83,10 @@ export default function KidsTable({logout}) {
         </TableBody>
       </Table>
     </TableContainer>
-    <AddActionDialog isOpen={addActionDialogOpen} onClose={() => setAddActionDialogOpen(false)} kid_id={selectedRow.id} /> 
-    {showKidView && <KidView kid={selectedRow} logout={logout}/>}
+    <AddActionDialog isOpen={addActionDialogOpen} onClose={onClose} kid_id={selectedRow.id} /> 
+    {showKidView &&  <Dialog open={showKidView} onClose={onClose}>
+      <KidView kid={selectedRow} logout={logout}/> 
+      </Dialog>}
     </>
   );
 }

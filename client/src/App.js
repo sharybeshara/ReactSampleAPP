@@ -12,15 +12,15 @@ function App() {
   function logout(){
     console.log("here");
     setToken("");
-    setUser(null);
+    setUser({});
     setRegister(false);
   }
 
   return (
     <div>
       {!token &&  <Login setToken={setToken} register={register} setRegister={setRegister} setUser={setUser}/>} 
-      {user && user.user_role ==="admin" && <KidsTable  logout={logout} />}
-      {user && user.user_role ==="kid" && <KidView kid={user} logout={logout}/>}
+      {token && user && user.user_role ==="admin" && <KidsTable  logout={logout} />}
+      {token && user && user.user_role ==="kid" && <KidView kid={user} logout={logout}/>}
     </div>
   );
 }
