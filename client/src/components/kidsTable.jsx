@@ -11,7 +11,7 @@ import AddBoxIcon from '@mui/icons-material/AddBox';
 import {useEffect, useState} from 'react';
 import AddActionDialog from './addAction';
 import KidView from './kidView';
-import {Dialog} from '@mui/material';
+import {Button, Dialog, DialogTitle} from '@mui/material';
 
 export default function KidsTable({logout}) {
   const [searchedVal, setSearchedVal] = useState("");
@@ -48,7 +48,7 @@ export default function KidsTable({logout}) {
   
   return (
     <>
-    <SearchAppBar onChangeSearch={onChangeSearch} logout={logout} />
+    <SearchAppBar onChangeSearch={onChangeSearch} logout={logout} user="admin"/>
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -62,16 +62,16 @@ export default function KidsTable({logout}) {
         <TableBody>
           {kids.filter(((row) => {
       return row.name.toLowerCase().includes(searchedVal.toLowerCase());
-    })).map((row) => (
+    })).sort((a, b) => a.name > b.name ? 1 : -1).map((row) => (
             <TableRow
-              onClick={() => {setSelectedRow(row) 
-                setShowKidView(true)}}
+              
               key={row.name}
               hover={true}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {row.name}
+               <Button uppercase={false} onClick={() => {setSelectedRow(row) 
+                setShowKidView(true)}}>{row.name}</Button> 
               </TableCell>
               <TableCell align="right">{row.email}</TableCell>
               <TableCell align="right">{parseInt(row.total_points)}</TableCell>
@@ -85,7 +85,8 @@ export default function KidsTable({logout}) {
     </TableContainer>
     <AddActionDialog isOpen={addActionDialogOpen} onClose={onClose} kid_id={selectedRow.id} /> 
     {showKidView &&  <Dialog open={showKidView} onClose={onClose}>
-      <KidView kid={selectedRow} logout={logout}/> 
+    <DialogTitle>{selectedRow.name}' Actions</DialogTitle>
+      <KidView kid={selectedRow} logout={logout} user="dialog"/> 
       </Dialog>}
     </>
   );

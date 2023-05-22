@@ -3,10 +3,10 @@ import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-import IconButton from '@mui/material/IconButton';
+// import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-import MenuIcon from '@mui/icons-material/Menu';
+// import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -52,12 +52,14 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function SearchAppBar({onChangeSearch, logout}) {
+export default function SearchAppBar({onChangeSearch, logout, user}) {
   return (
+    <>
+    {user!=="dialog" &&
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <IconButton
+          {/* <IconButton
             size="large"
             edge="start"
             color="inherit"
@@ -65,7 +67,7 @@ export default function SearchAppBar({onChangeSearch, logout}) {
             sx={{ mr: 2 }}
           >
             <MenuIcon />
-          </IconButton>
+          </IconButton> */}
           <Typography
             variant="h6"
             noWrap
@@ -74,7 +76,7 @@ export default function SearchAppBar({onChangeSearch, logout}) {
           >
             Summer Camp 2023
           </Typography>
-          
+          {user==="admin" &&
           <Search>
             <SearchIconWrapper>
               <SearchIcon />
@@ -84,11 +86,13 @@ export default function SearchAppBar({onChangeSearch, logout}) {
               inputProps={{ 'aria-label': 'search' }}
               onChange={onChangeSearch}
             />
-          </Search>
+          </Search>}
 
           <LogoutIcon onClick={logout}/>
         </Toolbar>
       </AppBar>
     </Box>
+  }
+  </>
   );
 }

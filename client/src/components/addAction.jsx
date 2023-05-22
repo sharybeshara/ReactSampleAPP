@@ -58,6 +58,7 @@ export default function AddActionDialog({ isOpen, onClose, kid_id}) {
         <input type="number" value={points} onChange={handlePointsChange} placeholder="Enter points" />
       </DialogContent>
       <Button onClick={handleAddAction} disabled={!points}>Add Action</Button>
+      <Button onClick={onClose}>Cancel</Button>
     </Dialog>
   );
 }

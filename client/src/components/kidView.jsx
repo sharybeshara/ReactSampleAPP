@@ -3,34 +3,34 @@ import {Paper, Box, TableCell, TableBody, TableContainer, Table, TableRow, Table
 import {useEffect, useState} from 'react';
 import SearchAppBar from './bar';
 
-export default function KidView({kid, logout}) {
+export default function KidView({kid, logout, user}) {
   const [actions, setActions] = useState([]);
 
   useEffect(() => {
+    const getActions = (id) => {
+      return fetch('http://localhost:8080/actions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({user_id: id})
+      }).then(response => {
+        console.log(response);
+        return response.json();
+      })
+      .then(data => {
+        setActions(data);
+      });
+    }
     getActions(kid.id);
-  }, []);
+  }, [kid.id]);
 
-  function getActions(id) {
-    return fetch('http://localhost:8080/actions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({user_id: id})
-    }).then(response => {
-      console.log(response);
-      return response.json();
-    })
-    .then(data => {
-      setActions(data);
-    });
-  }
   return (
    <>
-   <SearchAppBar  logout={logout} />
+   <SearchAppBar  logout={logout} user={user}/>
    <Box sx={{p: 2, bgcolor: 'background.default', gridTemplateColumns: { md: '1fr 1fr' }, gap: 2 }}>
     <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
+      <Table  aria-label="simple table">
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
@@ -56,7 +56,7 @@ export default function KidView({kid, logout}) {
 
 <Box sx={{p: 2, bgcolor: 'background.default', gridTemplateColumns: { md: '1fr 1fr' }, gap: 2 }}>
 <TableContainer component={Paper}>
-  <Table sx={{ minWidth: 650 }} aria-label="simple table">
+  <Table  aria-label="simple table">
     <TableHead>
       <TableRow>
         <TableCell>Action Type</TableCell>
