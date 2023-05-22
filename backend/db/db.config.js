@@ -24,7 +24,7 @@ const connect = () => {
     db.Sequelize = Sequelize;
     db.sequelize = sequelize;
     db.users = require("../model/user_model")(sequelize, DataTypes, Model);
-
+    db.actions = require("../model/action_model")(sequelize, DataTypes, Model);
     return db;
 
 }

@@ -12,7 +12,7 @@ const actions = [
   { label: 'Games', points: 30 },
 ];
 
-export default function AddActionDialog({ isOpen, onClose, onAdd }) {
+export default function AddActionDialog({ isOpen, onClose, kid_id}) {
   const [selectedAction, setSelectedAction] = useState(actions[0]);
   const [points, setPoints] = useState('');
 
@@ -26,12 +26,26 @@ export default function AddActionDialog({ isOpen, onClose, onAdd }) {
     setPoints(event.target.value);
   };
 
-  const handleAddAction = () => {
-    onAdd(selectedAction, points);
+  const handleAddAction = async() => {
+    // onAdd(selectedAction, points);
+    await addAction();
     setSelectedAction(actions[0]);
     setPoints('');
     onClose();
   };
+
+  async function addAction() {
+    return fetch('http://localhost:8080/action', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({user_id: kid_id, action_type: selectedAction.label, points: points })
+    }).then(data => data.json())
+      .catch(error => {
+          console.log(error);
+      });
+   }
 
   return (
     <Dialog open={isOpen} onClose={onClose}>

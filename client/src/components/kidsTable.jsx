@@ -10,14 +10,14 @@ import SearchAppBar from './bar';
 import AddBoxIcon from '@mui/icons-material/AddBox';
 import {useEffect, useState} from 'react';
 import AddActionDialog from './addAction';
+import KidView from './kidView';
 
-
-export default function KidsTable(props) {
+export default function KidsTable({logout}) {
   const [searchedVal, setSearchedVal] = useState("");
   const [kids, setKids] = useState([]);
   const [addActionDialogOpen, setAddActionDialogOpen] = useState(false);
-  const [actions, setActions] = useState([]);
-  const [points, setPoints] = useState(0);
+  const [selectedRow, setSelectedRow] = useState(0);
+  const [showKidView, setShowKidView] = useState(false);
 
   const onChangeSearch = (event) => {
     console.log(event.target.value);
@@ -38,15 +38,16 @@ export default function KidsTable(props) {
       });
       
   }
-  const handleAddAction = (action, comingPoints) => {
-    const newAction = { ...action, comingPoints: parseInt(comingPoints) };
-    setActions([...actions, newAction]);
-    setPoints(points+comingPoints);
-  };
+ 
+  // const handleAddAction = (action, comingPoints) => {
+  //   const newAction = { ...action, comingPoints: parseInt(comingPoints) };
+  //   setActions([...actions, newAction]);
+  //   setPoints(points+comingPoints);
+  // };
   
   return (
     <>
-    <SearchAppBar onChangeSearch={onChangeSearch} logout={props.logout} />
+    <SearchAppBar onChangeSearch={onChangeSearch} logout={logout} />
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
@@ -62,22 +63,27 @@ export default function KidsTable(props) {
       return row.name.toLowerCase().includes(searchedVal.toLowerCase());
     })).map((row) => (
             <TableRow
+              onClick={() => {setSelectedRow(row) 
+                setShowKidView(true)}}
               key={row.name}
+              hover={true}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
                 {row.name}
               </TableCell>
               <TableCell align="right">{row.email}</TableCell>
-              <TableCell align="right">{parseInt(row.total_points) + parseInt(points)}</TableCell>
-              <TableCell align="right"><AddBoxIcon onClick={() => setAddActionDialogOpen(true)}>
+              <TableCell align="right">{parseInt(row.total_points)}</TableCell>
+              <TableCell align="right"><AddBoxIcon onClick={() => {setAddActionDialogOpen(true)
+              setSelectedRow(row)}} >
                </AddBoxIcon></TableCell>
             </TableRow>
           ))}
         </TableBody>
       </Table>
     </TableContainer>
-    <AddActionDialog isOpen={addActionDialogOpen} onClose={() => setAddActionDialogOpen(false)} onAdd={handleAddAction} /> 
+    <AddActionDialog isOpen={addActionDialogOpen} onClose={() => setAddActionDialogOpen(false)} kid_id={selectedRow.id} /> 
+    {showKidView && <KidView kid={selectedRow} logout={logout}/>}
     </>
   );
 }
