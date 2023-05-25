@@ -3,6 +3,7 @@
 // [START gae_node_request_example]
 const express = require('express');
 const jwt = require('jsonwebtoken');
+const path = require('path');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
@@ -15,9 +16,9 @@ require('dotenv').config()
 const adminPassword ="#Summer23#"
 app.use(cors());
 app.use(bodyParser.json());
-app.get('/', (req, res) => {
-  res.status(200).send('Hello, world!').end();
-});
+// app.get('/', (req, res) => {
+//   res.status(200).send('Hello, world!').end();
+// });
 app.get('/kids', async (req, res) => {
   userController.getKids().then(data => res.json(data));
 });
@@ -97,12 +98,18 @@ app.post('/action', async(req, res) => {
     res.status(500).send('cannot create user');
   }
 });
+app.use(express.static(path.join(__dirname, '../client/build')));
+
+app.get('/', function (req, res) {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
 // Start the server
 const PORT = parseInt(process.env.PORT) || 8080;
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
   console.log('Press Ctrl+C to quit.');
 });
+
 // [END gae_node_request_example]
 
 module.exports = app;

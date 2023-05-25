@@ -34,7 +34,7 @@ export default function AddActionDialog({ isOpen, onClose, kid_id}) {
   };
 
   async function addAction() {
-    return fetch('http://localhost:8080/action', {
+    return fetch('/action', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

@@ -8,7 +8,7 @@ export default function KidView({kid, logout, user}) {
 
   useEffect(() => {
     const getActions = (id) => {
-      return fetch('http://localhost:8080/actions', {
+      return fetch('/actions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

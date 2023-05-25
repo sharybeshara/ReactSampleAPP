@@ -29,7 +29,7 @@ export default function KidsTable({logout}) {
   }, []);
 
   function getKids() {
-    fetch('http://localhost:8080/kids')
+    fetch('/kids')
       .then(response => {
         console.log(response);
         return response.json();

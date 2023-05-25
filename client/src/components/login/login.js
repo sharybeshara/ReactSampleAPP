@@ -24,7 +24,7 @@ export default function Login({ setToken, register, setRegister, setUser }) {
   const [admin, setAdmin] = useState(false);
 
    function loginUser(credentials) {
-    return fetch('http://localhost:8080/login', {
+    return fetch('/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -37,7 +37,7 @@ export default function Login({ setToken, register, setRegister, setUser }) {
       });
    }
    async function registerUser(credentials) {
-    return fetch('http://localhost:8080/register', {
+    return fetch('/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
