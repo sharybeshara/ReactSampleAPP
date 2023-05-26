@@ -34,7 +34,7 @@ export default function AddActionDialog({ isOpen, onClose, kid_id}) {
   };
 
   async function addAction() {
-    return fetch('/action', {
+    return fetch('https://server-dot-storied-galaxy-386808.wl.r.appspot.com/action', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

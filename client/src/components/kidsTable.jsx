@@ -29,7 +29,7 @@ export default function KidsTable({logout}) {
   }, []);
 
   function getKids() {
-    fetch('/kids')
+    fetch('https://server-dot-storied-galaxy-386808.wl.r.appspot.com/kids')
       .then(response => {
         console.log(response);
         return response.json();
@@ -37,8 +37,8 @@ export default function KidsTable({logout}) {
       .then(data => {
         setKids(data);
       });
-      
-  }
+
+}
     async function onClose (){
       await getKids();
       setAddActionDialogOpen(false);

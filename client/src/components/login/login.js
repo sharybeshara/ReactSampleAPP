@@ -24,7 +24,7 @@ export default function Login({ setToken, register, setRegister, setUser }) {
   const [admin, setAdmin] = useState(false);
 
    function loginUser(credentials) {
-    return fetch('/login', {
+    return fetch('https://server-dot-storied-galaxy-386808.wl.r.appspot.com/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -37,7 +37,7 @@ export default function Login({ setToken, register, setRegister, setUser }) {
       });
    }
    async function registerUser(credentials) {
-    return fetch('/register', {
+    return fetch('https://server-dot-storied-galaxy-386808.wl.r.appspot.com/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'

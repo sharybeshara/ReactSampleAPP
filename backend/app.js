@@ -98,10 +98,10 @@ app.post('/action', async(req, res) => {
     res.status(500).send('cannot create user');
   }
 });
-app.use(express.static(path.join(__dirname, '../client/build')));
+// app.use(express.static(path.join(__dirname, 'build')));
 
 app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+    res.json('Hello, world New!');
 });
 // Start the server
 const PORT = parseInt(process.env.PORT) || 8080;
@@ -110,6 +110,5 @@ app.listen(PORT, () => {
   console.log('Press Ctrl+C to quit.');
 });
 
-// [END gae_node_request_example]
 
 module.exports = app;
