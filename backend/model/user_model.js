@@ -24,6 +24,10 @@ module.exports = (sequelize, DataTypes, Model) => {
         total_points: {
             type: DataTypes.INTEGER,
         },
+        userid: {
+          type: DataTypes.STRING,
+          allowNull: false
+        },
         password:{
           type: DataTypes.STRING,
           allowNull: false,
