@@ -8,12 +8,12 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const app = express();
 
-// const createTcpPool = require('./db/connect-tcp.js');
 const userController = require('./user_controller');
 const actionController = require('./action_controller');
 require('dotenv').config()
 
-const adminPassword ="#Summer23#"
+const adminPassword = process.env.ADMIN_PASSWORD;
+const jwtSecret = process.env.JWT_SECRET;
 app.use(cors());
 app.use(bodyParser.json());
 // app.get('/', (req, res) => {
@@ -26,32 +26,33 @@ app.get('/users', async (req, res) => {
   userController.getUsers().then(data => res.json(data));
 });
 app.use('/login', async(req, res) => {
-  const { email, password } = req.body;
-  const token = jwt.sign({email}, "secret");
-  let user = await userController.getUser(email, password);
+  const { mobileNumber, password } = req.body;
+  const token = jwt.sign({mobileNumber}, jwtSecret);
+  let user = await userController.getUser(mobileNumber, password);
   if(user){
     res.send({
         token: token,
         user: user
       });
   }else{
-    res.status(400).send('Invalid email or password');
+    res.status(400).send('Invalid mobile number or password');
   }
 });
 app.use('/register', async(req, res) => {
-  const {name, email, password } = req.body;
-  if (!(email && password && name)) {
+  const {name, mobileNumber, password } = req.body;
+  console.log(req.body);
+  if (!(mobileNumber && password && name)) {
     res.status(400).send("All input is required");
   }
 
-  if ( await userController.findUser(email)) {
+  if ( await userController.findUser(mobileNumber)) {
     return res.status(409).send("User Already Exist. Please Login");
   }
 
-  const token = jwt.sign({email}, "secret");
+  const token = jwt.sign({name}, jwtSecret);
   
   if(req.body.adminPassword == adminPassword){
-    let user = await userController.addUser({name:req.body.name, email: req.body.email, password: req.body.password, user_role:"admin"});
+    let user = await userController.addUser({name: name, mobile_number: mobileNumber, password: password, user_role:"admin"});
   if(user){
     res.status(201).send({
         token: token,
@@ -63,7 +64,7 @@ app.use('/register', async(req, res) => {
   
   }
   else{
-    let user = await userController.addUser({name:req.body.name, email: req.body.email, password: req.body.password, user_role:"kid"});
+    let user = await userController.addUser({name: name, mobile_number: mobileNumber, password: password, user_role:"kid"});
     if(user){
       res.status(201).send({
           token: token,

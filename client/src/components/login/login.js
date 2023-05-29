@@ -13,7 +13,7 @@ import './login.css';
 
 export default function Login({ setToken, register, setRegister, setUser }) {
   const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPassword] = useState();
   const [adminPassword, setAdminPassword] = useState();
   const [error, setError] = useState(false);
@@ -24,7 +24,7 @@ export default function Login({ setToken, register, setRegister, setUser }) {
   const [admin, setAdmin] = useState(false);
 
    function loginUser(credentials) {
-    return fetch('https://server-dot-storied-galaxy-386808.wl.r.appspot.com/login', {
+    return fetch(process.env.REACT_APP_BACKEND_HOST+'/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -37,14 +37,19 @@ export default function Login({ setToken, register, setRegister, setUser }) {
       });
    }
    async function registerUser(credentials) {
-    return fetch('https://server-dot-storied-galaxy-386808.wl.r.appspot.com/register', {
+    return fetch(process.env.REACT_APP_BACKEND_HOST+'/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(credentials)
-    }).then(data => data.json())
-          .catch(error => {
+    }).then(response => {
+      if(response.status === 409)
+        setErrorMessage("This mobile number is already in use.")
+      return response.json();
+    })
+    .then(data => data)
+    .catch(error => {
             setError(true);
           }); 
    }
@@ -57,14 +62,14 @@ export default function Login({ setToken, register, setRegister, setUser }) {
     let result = null; 
     if (!register) {
     result = await  loginUser({
-      email,
+      mobileNumber,
       password
     });
   }
     else{
       result = await registerUser({
       name,  
-      email,
+      mobileNumber,
       password,
       adminPassword
       });
@@ -98,11 +103,11 @@ export default function Login({ setToken, register, setRegister, setUser }) {
       {/* <form onSubmit={handleSubmit}> */}
         <div>
         <TextField
-          label="Email"
-          type="email"
-          id="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
+          label="Mobile"
+          type="tel"
+          id="mobile_number"
+          value={mobileNumber}
+          onChange={(event) => setMobileNumber(event.target.value)}
           required
           error={error}
         />

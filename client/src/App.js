@@ -10,7 +10,6 @@ function App() {
   const { token, setToken, user, setUser, register, setRegister} = useToken();
   
   function logout(){
-    console.log("here");
     setToken("");
     setUser({});
     setRegister(false);

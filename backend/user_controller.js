@@ -45,6 +45,35 @@ class UsersController {
         else
             return false;
     }
+    async findUser(mobile_number){
+        const user = await this.db.users.findOne({ where: { mobile_number } });
+        if(user)
+            return true;
+        else
+            return false;
+    }
+
+    async getUser(mobile_number, password){
+        try {
+            const user = await this.db.users.findOne({ where: { mobile_number} });
+            if (!user) {
+                console.error('Invalid mobile number or password');
+              return null;
+            }
+        
+            const isPasswordValid = await bcrypt.compare(password, user.password);
+        
+            if (!isPasswordValid) {
+                console.error('Invalid  mobile number or password');
+              return null;
+            }
+        
+            return user;
+          } catch (error) {
+            console.error(error);
+           return null;
+          }
+    }
 
     async getUser(email, password){
         try {

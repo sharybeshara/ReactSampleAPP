@@ -8,7 +8,7 @@ export default function KidView({kid, logout, user}) {
 
   useEffect(() => {
     const getActions = (id) => {
-      return fetch('/actions', {
+      return fetch(process.env.REACT_APP_BACKEND_HOST+'/actions', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -34,7 +34,7 @@ export default function KidView({kid, logout, user}) {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell align="right">Email</TableCell>
+            <TableCell align="right">Mobile Number</TableCell>
             <TableCell align="right">Points</TableCell>
           </TableRow>
         </TableHead>
@@ -46,7 +46,7 @@ export default function KidView({kid, logout, user}) {
               <TableCell component="th" scope="row">
                 {kid.name}
               </TableCell>
-              <TableCell align="right">{kid.email}</TableCell>
+              <TableCell align="right">{kid.mobile_number}</TableCell>
               <TableCell align="right">{parseInt(kid.total_points) }</TableCell>
             </TableRow>
         </TableBody>

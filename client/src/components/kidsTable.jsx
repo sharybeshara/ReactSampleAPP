@@ -29,7 +29,7 @@ export default function KidsTable({logout}) {
   }, []);
 
   function getKids() {
-    fetch('https://server-dot-storied-galaxy-386808.wl.r.appspot.com/kids')
+    fetch(process.env.REACT_APP_BACKEND_HOST+'/kids')
       .then(response => {
         console.log(response);
         return response.json();
@@ -54,7 +54,7 @@ export default function KidsTable({logout}) {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell align="right">Email</TableCell>
+            <TableCell align="right">Mobile Number</TableCell>
             <TableCell align="right">Points</TableCell>
             <TableCell align="right">Actions</TableCell>
           </TableRow>
@@ -73,7 +73,7 @@ export default function KidsTable({logout}) {
                <Button uppercase={false} onClick={() => {setSelectedRow(row) 
                 setShowKidView(true)}}>{row.name}</Button> 
               </TableCell>
-              <TableCell align="right">{row.email}</TableCell>
+              <TableCell align="right">{row.mobile_number}</TableCell>
               <TableCell align="right">{parseInt(row.total_points)}</TableCell>
               <TableCell align="right"><AddBoxIcon onClick={() => {setAddActionDialogOpen(true)
               setSelectedRow(row)}} >
