@@ -10,11 +10,11 @@ class ActionsController {
         
     }
     
-    async getActionsByUserId(user_id) {
+    async getActionsByKidId(kid_id) {
         try {
             const actions = await this.db.actions.findAll({
                 where: {
-                  user_id: user_id
+                  kid_id: kid_id
                 }
               });
             console.log('actions:::', actions);
@@ -29,7 +29,7 @@ class ActionsController {
         let data = {};
         try {
             data = await this.db.actions.create(action);
-           await this.db.users.increment('total_points', { by: action.points, where: { id: action.user_id }});
+           await this.db.kids.increment('total_points', { by: action.points, where: { id: action.kid_id }});
         } catch(err) {
             console.error('Error::' + err);
             return null;

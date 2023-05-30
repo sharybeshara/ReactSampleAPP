@@ -39,7 +39,7 @@ export default function AddActionDialog({ isOpen, onClose, kid_id}) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({user_id: kid_id, action_type: selectedAction.label, points: points })
+      body: JSON.stringify({kid_id: kid_id, action_type: selectedAction.label, points: points })
     }).then(data => data.json())
       .catch(error => {
           console.log(error);

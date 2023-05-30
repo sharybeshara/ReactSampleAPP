@@ -29,7 +29,7 @@ export default function KidsTable({logout}) {
   }, []);
 
   function getKids() {
-    fetch(process.env.REACT_APP_BACKEND_HOST+'/kids')
+    fetch(process.env.REACT_APP_BACKEND_HOST+'/allKids')
       .then(response => {
         console.log(response);
         return response.json();
@@ -43,7 +43,6 @@ export default function KidsTable({logout}) {
       await getKids();
       setAddActionDialogOpen(false);
       setShowKidView(false);
-      
     }
   
   return (
@@ -70,7 +69,7 @@ export default function KidsTable({logout}) {
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-               <Button uppercase={false} onClick={() => {setSelectedRow(row) 
+               <Button onClick={() => {setSelectedRow(row) 
                 setShowKidView(true)}}>{row.name}</Button> 
               </TableCell>
               <TableCell align="right">{row.mobile_number}</TableCell>

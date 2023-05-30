@@ -25,14 +25,38 @@ class UsersController {
     async getKids() {
 
         try {
-            const users = await this.db.users.findAll({
+            const kids = await this.db.kids.findAll();
+            console.log('kids:::', kids);
+            return kids;
+          } catch (error) {
+            console.error(error);
+            return [];
+          }
+    }
+    async addKid(kid) {
+        let data = {};
+        try {
+            kid['userid'] = kid['name']+this.makeid(4);
+            data = await this.db.kids.create(kid);
+        } catch(err) {
+            console.error('Error::' + err);
+            return null;
+        }
+        return data;
+    }
+
+    async getKidsPerParent(parent_id) {
+
+        try {
+            // const parent = await this.db.users.findOne({ where: { mobile_number } });
+            const kids = await this.db.kids.findAll({
               where: {
-                user_role: "kid"
+                parent_id: parent_id
               }
             });
         
-            console.log('kids:::', users);
-            return users;
+            console.log('kids:::', kids);
+            return kids;
           } catch (error) {
             console.error(error);
             return [];
@@ -112,7 +136,6 @@ class UsersController {
     async addUser(user) {
         let data = {};
         try {
-            user['userid'] = user['name']+this.makeid(4);
             data = await this.db.users.create(user);
         } catch(err) {
             console.error('Error::' + err);

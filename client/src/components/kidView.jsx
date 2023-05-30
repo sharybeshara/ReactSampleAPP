@@ -13,7 +13,7 @@ export default function KidView({kid, logout, user}) {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({user_id: id})
+        body: JSON.stringify({kid_id: id})
       }).then(response => {
         console.log(response);
         return response.json();
@@ -34,7 +34,7 @@ export default function KidView({kid, logout, user}) {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell align="right">Mobile Number</TableCell>
+            <TableCell align="right">ID</TableCell>
             <TableCell align="right">Points</TableCell>
           </TableRow>
         </TableHead>
@@ -46,7 +46,7 @@ export default function KidView({kid, logout, user}) {
               <TableCell component="th" scope="row">
                 {kid.name}
               </TableCell>
-              <TableCell align="right">{kid.mobile_number}</TableCell>
+              <TableCell align="right">{kid.userid}</TableCell>
               <TableCell align="right">{parseInt(kid.total_points) }</TableCell>
             </TableRow>
         </TableBody>
@@ -66,7 +66,7 @@ export default function KidView({kid, logout, user}) {
     <TableBody>
       {actions.map((row) => (
             <TableRow
-              key={row.action_type}
+              key={row.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">

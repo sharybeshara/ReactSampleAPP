@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes, Model) => {
             primaryKey: true,
             autoIncrement: true
           },
-          user_id: {
+          kid_id: {
             type: DataTypes.INTEGER,
             foreignKey: true,
             allowNull: false
