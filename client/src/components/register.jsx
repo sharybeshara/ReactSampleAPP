@@ -86,7 +86,6 @@ export default function Register({ setToken, setUser }) {
     <div className="login-wrapper">
       <Container component="main" maxWidth="xs">
 
-
         {error && <Alert severity="error" >{errorMessage}</Alert>}
         <Box
           component="form"
@@ -105,7 +104,7 @@ export default function Register({ setToken, setUser }) {
           <h2>Register</h2>
           {/* </Typography> */}
           {/* <Box sx={{ mt: 3 }}> */}
-          <Grid container spacing={2}>
+          <Grid container spacing={1}>
             <Grid item xs={12} sm={6}>
               <TextField
                 label="Name"
@@ -165,7 +164,7 @@ export default function Register({ setToken, setUser }) {
               />
             </Grid>
           </Grid>
-          <Box
+          {!admin && <Box
             sx={{
               marginTop: 2,
               display: 'flex',
@@ -175,36 +174,39 @@ export default function Register({ setToken, setUser }) {
             noValidate
             autoComplete="off">
             <Button onClick={addKid}>Add Kid</Button>
-            {kids.map((kid, i) => {
-              return (
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={6}>
-                    <TextField
-                      name="name"
-                      label="Kid's Name"
-                      onChange={(e) => handleChange(e.target.value, i, "name")}
-                      value={kid.name || ""}
-                      id="name"
-                    />
-                  </Grid>
-                  <Grid item xs={12} sm={6}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DemoContainer components={['DatePicker']}>
+            <Grid container spacing={1} >
+              {kids.map((kid, i) => {
+                return (
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={['DatePicker', 'TextField']}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          name="name"
+                          fullWidth
+                          label="Kid's Name"
+                          onChange={(e) => handleChange(e.target.value, i, "name")}
+                          value={kid.name || ""}
+                          id="name"
+                        size="small"
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={6}>
                         <DatePicker
                           disableFuture={true}
-                          OpenPickerButtonProps={{ style: { marginLeft: 2 } }}
+                          OpenPickerButtonProps={{ style: { marginRight: 4 } }}
                           label="Date Of Birth"
-                          value={kid.dateOfBirth }
+                          value={kid.dateOfBirth}
                           onChange={(date) => handleChange(date, i, "dateOfBirth")}
+                        slotProps={{ textField: { size: 'small' } }}
                         />
-                      </DemoContainer>
-                    </LocalizationProvider>
-                  </Grid>
-                </Grid>
-              );
-            })}
+                      </Grid>
+                    </DemoContainer>
+                  </LocalizationProvider>
 
-          </Box>
+                );
+              })}
+            </Grid>
+          </Box>}
 
           <FormGroup>
             <FormControlLabel control={<Switch
