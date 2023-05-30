@@ -53,7 +53,7 @@ export default function KidsTable({logout}) {
         <TableHead>
           <TableRow>
             <TableCell>Name</TableCell>
-            <TableCell align="right">Mobile Number</TableCell>
+            <TableCell align="right">ID</TableCell>
             <TableCell align="right">Points</TableCell>
             <TableCell align="right">Actions</TableCell>
           </TableRow>
@@ -72,7 +72,7 @@ export default function KidsTable({logout}) {
                <Button onClick={() => {setSelectedRow(row) 
                 setShowKidView(true)}}>{row.name}</Button> 
               </TableCell>
-              <TableCell align="right">{row.mobile_number}</TableCell>
+              <TableCell align="right">{row.userid}</TableCell>
               <TableCell align="right">{parseInt(row.total_points)}</TableCell>
               <TableCell align="right"><AddBoxIcon onClick={() => {setAddActionDialogOpen(true)
               setSelectedRow(row)}} >

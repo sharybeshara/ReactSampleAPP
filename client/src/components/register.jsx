@@ -187,22 +187,20 @@ export default function Register({ setToken, setUser }) {
                           onChange={(e) => handleChange(e.target.value, i, "name")}
                           value={kid.name || ""}
                           id="name"
-                        size="small"
                         />
                       </Grid>
                       <Grid item xs={12} sm={6}>
                         <DatePicker
                           disableFuture={true}
-                          OpenPickerButtonProps={{ style: { marginRight: 4 } }}
                           label="Date Of Birth"
                           value={kid.dateOfBirth}
                           onChange={(date) => handleChange(date, i, "dateOfBirth")}
-                        slotProps={{ textField: { size: 'small' } }}
                         />
                       </Grid>
+                      <Divider variant="middle" />
                     </DemoContainer>
                   </LocalizationProvider>
-
+                  
                 );
               })}
             </Grid>
