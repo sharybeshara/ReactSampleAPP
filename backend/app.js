@@ -29,11 +29,11 @@ app.get('/users', async (req, res) => {
 });
 app.use('/login', async (req, res) => {
   const { mobileNumber, password } = req.body;
-  const token = jwt.sign({ mobileNumber }, jwtSecret);
+
   let user = await userController.getUser(mobileNumber, password);
   if (user) {
     res.send({
-      token: token,
+      token: user.token,
       user: user
     });
   } else {
@@ -51,7 +51,7 @@ console.log(req.body);
     return res.status(409).send("User Already Exist. Please Login");
   }
 
-  const token = jwt.sign({ name }, jwtSecret);
+  const token = jwt.sign({ mobileNumber }, jwtSecret);
 
   if (req.body.adminPassword == adminPassword) {
     let user = await userController.addUser({ name: name, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "admin", token: token });

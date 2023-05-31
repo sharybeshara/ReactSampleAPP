@@ -25,8 +25,11 @@ export default function useToken() {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ token: token })
-      }).then(response => response.json())
-        .then(data => setUser(data));
+      }).then(response =>  {  
+          return response.json();
+        }).then(data => setUser(data))
+        .catch(error =>
+          saveToken(""));
     }
     if (token && token !== "" && !user) {
       getUser();
