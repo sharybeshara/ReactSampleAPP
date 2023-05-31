@@ -81,6 +81,35 @@ class UsersController {
             return false;
     }
 
+    async getUserById(id){
+        try {
+            const user = await this.db.users.findOne({ where: { id} });
+            if (!user) {
+              
+              return null;
+            }
+            return user;
+          } catch (error) {
+            console.error(error);
+           return null;
+          }
+    }
+    async getUserByToken(token){
+        try {
+            const user = await this.db.users.findOne({ where: { token} });
+            if (!user) {
+              
+              return null;
+            
+            }
+            return user;
+
+          } catch (error) {
+            console.error(error);
+           return null;
+          }
+    }
+
     async getUser(mobile_number, password){
         try {
             const user = await this.db.users.findOne({ where: { mobile_number} });
@@ -114,20 +143,22 @@ class UsersController {
         return data;
     }
 
-    async updateUser(user) {
+    async updateUser(user, id) {
         let data = {};
         try {
 
             data = await this.db.users.update({...user}, {
                 where: {
-                    id: user.id
-                }
+                    id: id
+                },
+                returning: true,
             });
+            console.log(data[1]);
         } catch(err) {
             console.error('Error::' + err);
             throw new Error("can't update user");
         }
-        return data;
+        return data[1];
     }
 
     async deleteUser(user_id) {

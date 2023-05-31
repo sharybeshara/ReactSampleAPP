@@ -54,7 +54,7 @@ console.log(req.body);
   const token = jwt.sign({ name }, jwtSecret);
 
   if (req.body.adminPassword == adminPassword) {
-    let user = await userController.addUser({ name: name, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "admin" });
+    let user = await userController.addUser({ name: name, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "admin", token: token });
     if (user) {
       res.status(201).send({
         token: token,
@@ -66,7 +66,7 @@ console.log(req.body);
 
   }
   else {
-    let user = await userController.addUser({ name: name, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "parent" });
+    let user = await userController.addUser({ name: name, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "parent", token: token});
     await kids.forEach(kid => {
       kid['parent_id'] = user['id'];
       userController.addKid({name: kid.name, parent_id: user.id, dateofbirth: new Date(kid.dateOfBirth) });
@@ -112,6 +112,20 @@ app.put('/action', async (req, res) => {
   let action = await actionController.updateAction({kid_id: kid_id, action_type: action_type, points: points }, id);
   if (action) {
     res.sendStatus(204);
+  } else {
+    res.sendStatus(500);
+  }
+});
+
+app.post('/user', async (req, res) => {
+  const { token} = req.body;
+  if (!(token  )) {
+    res.status(400).send("token is required");
+  }
+  let user = await userController.getUserByToken(token);
+  console.log("app", user);
+  if (user) {
+    res.status(200).send(user);
   } else {
     res.sendStatus(500);
   }
