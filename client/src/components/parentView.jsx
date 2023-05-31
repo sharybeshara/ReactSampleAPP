@@ -17,26 +17,8 @@ export default function ParentView({ propParent, logout }) {
 
 
 
-    // const getParent = async() => {
-    //     return fetch(process.env.REACT_APP_BACKEND_HOST+'/user', {
-    //       method: 'GET',
-    //       headers: {
-    //         'Content-Type': 'application/json'
-    //       },
-    //       body: JSON.stringify({id: parent.id})
-    //     }).then(response => {
-    //       if (response.status !== 204){
-    //       console.log("error");
-    //       return response.json();
-    //       }}).then(data => {
-    //         setParent(data);
-    //     })
-    //       .catch(error => {
-    //           console.log(error);
-    //       });
-    //   }
+
     useEffect(() => {
-        console.log(parent);
         getKids(parent.id);
     }, [parent.id]);
 
@@ -60,8 +42,6 @@ export default function ParentView({ propParent, logout }) {
         setEdit(true);
     };
     const onEditClose = async () => {
-        // await getParent();
-
         setEdit(false);
 
     };
