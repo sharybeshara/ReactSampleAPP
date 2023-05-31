@@ -14,13 +14,15 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import Link from '@mui/material/Link';
+import qrcode from '../qrcode.jpg'
 
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
 
 import './login/login.css';
 
-export default function Register({ setToken, setUser }) {
+export default function Register({ setToken, setUser, setRegister }) {
   const [name, setName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPassword] = useState();
@@ -45,7 +47,6 @@ export default function Register({ setToken, setUser }) {
   };
 
   async function registerUser(credentials) {
-    console.log(credentials);
     return fetch('http://localhost:8080/register', {
       method: 'POST',
       headers: {
@@ -177,30 +178,31 @@ export default function Register({ setToken, setUser }) {
             <Grid container spacing={1} >
               {kids.map((kid, i) => {
                 return (
-                  <LocalizationProvider dateAdapter={AdapterDayjs}>
-                    <DemoContainer components={['DatePicker', 'TextField']}>
-                      <Grid item xs={12} sm={6}>
-                        <TextField
-                          name="name"
-                          fullWidth
-                          label="Kid's Name"
-                          onChange={(e) => handleChange(e.target.value, i, "name")}
-                          value={kid.name || ""}
-                          id="name"
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={6}>
-                        <DatePicker
-                          disableFuture={true}
-                          label="Date Of Birth"
-                          value={kid.dateOfBirth}
-                          onChange={(date) => handleChange(date, i, "dateOfBirth")}
-                        />
-                      </Grid>
-                      <Divider variant="middle" />
-                    </DemoContainer>
-                  </LocalizationProvider>
-                  
+                  <div key={i}>
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                      <DemoContainer components={['DatePicker', 'TextField']}>
+                        <Grid item xs={12} sm={6}>
+                          <TextField
+                            name="name"
+                            fullWidth
+                            label="Kid's Name"
+                            onChange={(e) => handleChange(e.target.value, i, "name")}
+                            value={kid.name || ""}
+                            id="name"
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                          <DatePicker
+                            disableFuture={true}
+                            label="Date Of Birth"
+                            value={kid.dateOfBirth}
+                            onChange={(date) => handleChange(date, i, "dateOfBirth")}
+                          />
+                        </Grid>
+                        <Divider variant="middle" />
+                      </DemoContainer>
+                    </LocalizationProvider>
+                  </div>
                 );
               })}
             </Grid>
@@ -211,7 +213,7 @@ export default function Register({ setToken, setUser }) {
               checked={admin}
               onChange={(event) => setAdmin(event.target.checked)}
               inputProps={{ 'aria-label': 'controlled' }}
-            />} label="Admin" />
+            />} label="Servant" />
           </FormGroup>
 
           <Divider light />
@@ -222,8 +224,8 @@ export default function Register({ setToken, setUser }) {
               </Typography>
 
               <TextField
-                helperText="Only enter the Admin Password if you are authorized as an administrator."
-                label="Admin Password"
+                helperText="Only enter the Servant Password if you are authorized as a servant."
+                label="Servant Password"
                 type="password"
                 id="adminPassword"
                 value={adminPassword}
@@ -236,14 +238,47 @@ export default function Register({ setToken, setUser }) {
 
           <div>
 
-
           </div>
           <Divider light />
           <Button sx={{ mt: 3, mb: 2 }} variant="outlined" type="submit" fullWidth>Register</Button>
-          {/* </Box> */}
+          <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Link href="#" variant="body2" onClick={() => setRegister(false)}>
+                Already have an account? Sign in
+              </Link>
+            </Grid>
+          </Grid>
+          <Divider  />
+          <h2>How to register</h2>
+          <Typography component={'span'} variant={'body2'}>
+            <p> <li>Registration Fee: $25 per child</li>
+              <li>Duration: 10 weeks</li></p>
+            <p></p>
+            <p>  To complete the registration process, you can choose one of the following payment options:</p>
+
+            <li>  Option 1: Scan Venmo QR Code</li>
+            <ol>
+              <li> Open the Venmo app on your smartphone.</li>
+              <li> Select the "Scan" option.</li>
+              <li> Align your phone's camera with the provided QR code.</li>
+              <li> Enter the payment amount of $25 and proceed with the payment.</li>
+            </ol>
+            <p> <img src={qrcode} style={{ display: 'block', margin: 'auto', width: '250px', height: '300px' }} alt="react logo" /> </p>
+            <li>Option 2: In-Person Payment</li>
+
+            <p> If you prefer to make the payment in person, please contact Amy or Sara using the phone numbers provided below:</p>
+
+            <li>  Amy Bishara: (925) 791-1098</li>
+            <li>  Sara Magdy: (925) 393-8139</li>
+
+            <p>  They will provide you with the necessary instructions for making the payment and completing the registration process.</p>
+
+            <p> Should you have any further questions or need assistance, feel free to reach out to Amy or Sara.
+            </p>
+          </Typography>
         </Box>
       </Container >
-    </div>
+    </div >
 
 
 
