@@ -158,7 +158,7 @@ class UsersController {
             console.error('Error::' + err);
             throw new Error("can't update user");
         }
-        return data[1];
+        return data[1][0];
     }
 
     async deleteUser(user_id) {

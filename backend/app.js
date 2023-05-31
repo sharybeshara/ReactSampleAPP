@@ -131,6 +131,20 @@ app.post('/user', async (req, res) => {
   }
 });
 
+app.put('/user', async (req, res) => {
+  const { id, email, name, mobile, address} = req.body;
+  if (!(id && email && name && mobile && address )) {
+    res.status(400).send("All input is required");
+  }
+  let user = await userController.updateUser({name: name, email: email, address: address, mobile_number: mobile}, id);
+  if (user) {
+    console.log(user);
+    res.status(200).send(user);
+  } else {
+    res.sendStatus(500);
+  }
+});
+
 app.delete('/action', async (req, res) => {
   const {id ,points, kid_id} = req.body;
   if (!(id && points && kid_id)) {

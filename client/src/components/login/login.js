@@ -30,57 +30,26 @@ export default function Login({ setToken, register, setRegister, setUser }) {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(credentials)
-    }).then(data => data.json())
-      .catch(error => {
-          setError(true);
-          setErrorMessage(error.toString()+"at login");
-      });
-   }
-   async function registerUser(credentials) {
-    return fetch(process.env.REACT_APP_BACKEND_HOST+'/register', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(credentials)
     }).then(response => {
-      if(response.status === 409)
-        setErrorMessage("This mobile number is already in use.")
+      if(response.status === 400)
+        setErrorMessage("Invalid Mobile Number or Password. Please try again.")
       return response.json();
     })
     .then(data => data)
-    .catch(error => {
-            setError(true);
-          }); 
+      .catch(error => {
+          setError(true);
+      });
    }
-
   const handleSubmit = async e => {
     e.preventDefault();
     // setEmailError(false)
     // setPasswordError(false)
    
-    let result = null; 
-    if (!register) {
-    result = await  loginUser({
+    let result = await  loginUser({
       mobileNumber,
       password
     });
-  }
-    else{
-      result = await registerUser({
-      name,  
-      mobileNumber,
-      password,
-      adminPassword
-      });
-    }
-    // if(result){
-    //   console.log(result);
-    //   token = result.token;
-    //   user = result.user;
-
-      
-    // }
+  
     setToken(result?.token);
     setUser(result?.user);
       

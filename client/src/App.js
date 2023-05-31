@@ -22,8 +22,8 @@ function App() {
       {!token && register && <Register setToken={setToken} setUser={setUser} setRegister={setRegister}/>} 
       {token && user && user.user_role ==="superAdmin" &&  <KidsTable  logout={logout} role={"super"} />}
       {token && user && user.user_role ==="admin" &&  <KidsTable  logout={logout} role={"admin"} />}
-      {token && user && user.user_role ==="parent" && <ParentView parent={user} logout={logout}/>}
-      {token && user && user.user_role !=="parent" && user.user_role !=="admin" && <Register setToken={setToken} setUser={setUser}/>}
+      {token && user && user.user_role ==="parent" && <ParentView propParent={user} logout={logout}/>}
+      {token && user && user.user_role !=="parent" && user.user_role !=="admin" && user.user_role !=="superAdmin" && <Register setToken={setToken} setUser={setUser}/>}
     </div>
   );
 }
