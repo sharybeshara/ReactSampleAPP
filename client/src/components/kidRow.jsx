@@ -14,7 +14,7 @@ import EditIcon from '@mui/icons-material/Edit';
 
 import { useState } from 'react';
 
-export default function KidRow({ kid, getKids }) {
+export default function KidRow({ kid, getKids, role }) {
     const [open, setOpen] = useState(false);
     const [actions, setActions] = useState([]);
     const [addActionDialogOpen, setAddActionDialogOpen] = useState(false);
@@ -111,7 +111,7 @@ export default function KidRow({ kid, getKids }) {
                                     <TableRow>
                                         <TableCell>Reason</TableCell>
                                         <TableCell>Points</TableCell>
-                                        <TableCell align="right" >Actions</TableCell>
+                                      {role==="super" &&  <TableCell align="right" >Actions</TableCell>}
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
@@ -121,7 +121,7 @@ export default function KidRow({ kid, getKids }) {
                                                 {action.action_type}
                                             </TableCell>
                                             <TableCell>{parseInt(action.points)}</TableCell>
-                                            {<TableCell align="right" component="th" scope="row">
+                                            {role==="super" && <TableCell align="right" component="th" scope="row">
                                                 <EditIcon onClick={() => handleEdit(action.id, action.action_type, parseInt(action.points) )} />
                                                 <DeleteIcon onClick={() => handleDelete(action.id, action.points)} />
                                             </TableCell>}

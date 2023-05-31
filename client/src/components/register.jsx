@@ -86,7 +86,6 @@ export default function Register({ setToken, setUser, setRegister }) {
   return (
     <div className="login-wrapper">
       <Container component="main" maxWidth="xs">
-
         {error && <Alert severity="error" >{errorMessage}</Alert>}
         <Box
           component="form"
@@ -102,6 +101,33 @@ export default function Register({ setToken, setUser, setRegister }) {
         >
 
           {/* <Typography component="h1" variant="h5"> */}
+          <h2>Summer Camp 2023</h2>
+          <Typography component={'span'} variant={'body2'}>
+            <p> <li>Registration Fee: $25 per child</li>
+              <li>Duration: 10 weeks</li></p>
+            <p></p>
+            <p>  To complete the registration process, you can choose one of the following payment options:</p>
+
+            <li>  Option 1: Scan Venmo QR Code</li>
+            <ol>
+              <li> Open the Venmo app on your smartphone.</li>
+              <li> Select the "Scan" option.</li>
+              <li> Align your phone's camera with the provided QR code.</li>
+              <li> Enter the payment amount of $25 and proceed with the payment.</li>
+            </ol>
+            <p> <img src={qrcode} style={{ display: 'block', margin: 'auto', width: '250px', height: '300px' }} alt="react logo" /> </p>
+            <li>Option 2: In-Person Payment</li>
+
+            <p> If you prefer to make the payment in person, please contact Amy or Sara using the phone numbers provided below:</p>
+
+            <li>  Amy Bishara: (925) 791-1098</li>
+            <li>  Sara Magdy: (925) 393-8139</li>
+
+            <p>  They will provide you with the necessary instructions for making the payment and completing the registration process.</p>
+
+            <p> Should you have any further questions or need assistance, feel free to reach out to Amy or Sara.
+            </p>
+          </Typography>
           <h2>Register</h2>
           {/* </Typography> */}
           {/* <Box sx={{ mt: 3 }}> */}
@@ -249,33 +275,8 @@ export default function Register({ setToken, setUser, setRegister }) {
             </Grid>
           </Grid>
           <Divider  />
-          <h2>How to register</h2>
-          <Typography component={'span'} variant={'body2'}>
-            <p> <li>Registration Fee: $25 per child</li>
-              <li>Duration: 10 weeks</li></p>
-            <p></p>
-            <p>  To complete the registration process, you can choose one of the following payment options:</p>
-
-            <li>  Option 1: Scan Venmo QR Code</li>
-            <ol>
-              <li> Open the Venmo app on your smartphone.</li>
-              <li> Select the "Scan" option.</li>
-              <li> Align your phone's camera with the provided QR code.</li>
-              <li> Enter the payment amount of $25 and proceed with the payment.</li>
-            </ol>
-            <p> <img src={qrcode} style={{ display: 'block', margin: 'auto', width: '250px', height: '300px' }} alt="react logo" /> </p>
-            <li>Option 2: In-Person Payment</li>
-
-            <p> If you prefer to make the payment in person, please contact Amy or Sara using the phone numbers provided below:</p>
-
-            <li>  Amy Bishara: (925) 791-1098</li>
-            <li>  Sara Magdy: (925) 393-8139</li>
-
-            <p>  They will provide you with the necessary instructions for making the payment and completing the registration process.</p>
-
-            <p> Should you have any further questions or need assistance, feel free to reach out to Amy or Sara.
-            </p>
-          </Typography>
+         
+          
         </Box>
       </Container >
     </div >

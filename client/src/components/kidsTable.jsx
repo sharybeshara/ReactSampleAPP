@@ -10,7 +10,7 @@ import SearchAppBar from './bar';
 import { useEffect, useState } from 'react';
 import KidRow from './kidRow'
 
-export default function KidsTable({ logout }) {
+export default function KidsTable({ logout, role }) {
   const [searchedVal, setSearchedVal] = useState("");
   const [kids, setKids] = useState([]);
 
@@ -51,7 +51,7 @@ export default function KidsTable({ logout }) {
               return row.userid.toLowerCase().includes(searchedVal.toLowerCase());
             })).sort((a, b) => a.name > b.name ? 1 : -1).map((row) => (
               
-                <KidRow key={row.id} kid={row} getKids={getKids} />
+                <KidRow key={row.id} kid={row} getKids={getKids} role={role} />
               
             ))}
 
