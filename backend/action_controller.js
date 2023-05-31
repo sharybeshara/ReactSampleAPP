@@ -25,7 +25,6 @@ class ActionsController {
         }
     }
     async addAction(action) {
-        console.log("controller", action);
         let data = {};
         try {
             data = await this.db.actions.create(action);
@@ -38,13 +37,8 @@ class ActionsController {
     }
     async updateAction(action, id) {
         let data = {};
-        console.log(action);
-
-       
-
         try {
             const past_action = await this.db.actions.findOne({ where: { id} });
-            console.log(past_action);
             const points_diff = parseInt(action.points) - parseInt(past_action.points)
 
             data = await this.db.actions.update({...action}, {
@@ -60,7 +54,7 @@ class ActionsController {
         return data;
     }
 
-    async deleteaction(action_id) {
+    async deleteaction(action_id, points, kid_id) {
         let data = {};
         try {
             data = await this.db.actions.destroy({
@@ -68,11 +62,11 @@ class ActionsController {
                     id: action_id
                 }
             });
+            await this.db.kids.decrement('total_points', { by: points, where: { id: kid_id }});
         } catch(err) {
             console.error('Error::' + err);
         }
         return data;
-        return {status: `${data.deletedCount > 0 ? true : false}`};
     }
 
    

@@ -111,11 +111,25 @@ app.put('/action', async (req, res) => {
   }
   let action = await actionController.updateAction({kid_id: kid_id, action_type: action_type, points: points }, id);
   if (action) {
-    res.status(204);
+    res.sendStatus(204);
   } else {
-    res.status(500);
+    res.sendStatus(500);
   }
 });
+
+app.delete('/action', async (req, res) => {
+  const {id ,points, kid_id} = req.body;
+  if (!(id && points && kid_id)) {
+    res.status(400).send("Action id is required");
+  }
+  let action = await actionController.deleteaction(id, points, kid_id);
+  if (action) {
+    res.sendStatus(204)
+  } else {
+    res.sendStatus(500);
+  }
+});
+
 
 
 app.get('/', function (req, res) {

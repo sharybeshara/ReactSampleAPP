@@ -46,15 +46,31 @@ export default function KidRow({ kid, getKids }) {
                 setActions(data);
             });
     }
-    
+   const deleteAction = async(id, points) => {
+        return fetch(process.env.REACT_APP_BACKEND_HOST+'/action', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({id: id, points: points, kid_id: kid.id})
+        }).then(response => {
+          if (response.status !== 204){
+          console.log("error");
+          }})
+          .catch(error => {
+              console.log(error);
+          });
+      }
     const handleChange = (open) => {
         setOpen(open);
         if (open) {
             getActions(kid.id)
         }
     };
-    const handleDelete = (id) => {
-        console.log("delete", id);
+    const handleDelete = async (action_id, points) => {
+        await deleteAction(action_id, points);
+        await getActions(kid.id);
+        await getKids();
     };
     const handleEdit = (id, label, points) => {
         setSelectedAction(id)
@@ -107,7 +123,7 @@ export default function KidRow({ kid, getKids }) {
                                             <TableCell>{parseInt(action.points)}</TableCell>
                                             {<TableCell align="right" component="th" scope="row">
                                                 <EditIcon onClick={() => handleEdit(action.id, action.action_type, parseInt(action.points) )} />
-                                                <DeleteIcon onClick={() => handleDelete(action.id)} />
+                                                <DeleteIcon onClick={() => handleDelete(action.id, action.points)} />
                                             </TableCell>}
                                         </TableRow>
                                     ))}
