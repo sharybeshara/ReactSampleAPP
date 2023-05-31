@@ -1,63 +1,74 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, Select, MenuItem, Button } from '@mui/material';
+import { Dialog, DialogTitle, DialogContent, Select, MenuItem, Button, TextField } from '@mui/material';
 
 const actions = [
-  { label: 'Behavior', points: 10 },
-  { label: 'Cleanup', points: 20 },
-  { label: 'Attendance', points: 30 },
-  { label: 'Participation', points: 30 },
-  { label: 'Helpful', points: 30 },
-  { label: 'Verse Memorization', points: 30 },
-  { label: 'Song Memorization', points: 30 },
-  { label: 'Games', points: 30 },
-];
+  "Behavior", 'Cleanup', 'Attendance', 'Participation', 'Helpful', 'Verse Memorization', 'Song Memorization', 'Games'];
 
-export default function AddActionDialog({ isOpen, onClose, kid_id}) {
-  const [selectedAction, setSelectedAction] = useState(actions[0]);
-  const [points, setPoints] = useState('');
-
-  const handleActionChange = (event) => {
-    const selectedLabel = event.target.value;
-    const selected = actions.find(action => action.label === selectedLabel);
-    setSelectedAction(selected);
+export default function AddActionDialog({ isOpen, onClose, kid_id, selectedLabel, pastPoints, edit, action_id }) {
+  const [selectedAction, setSelectedAction] = useState(selectedLabel||actions[0]);
+  const [points, setPoints] = useState(pastPoints||0);
+  
+  const handleAddAction =  async() => {
+    await addAction();
+    onClose();
+    setSelectedAction(actions[0]);
+    setPoints(0);
+    
   };
-
+  const handleEditAction = async() => {
+    await updateAction();
+    onClose();
+    setSelectedAction(actions[0]);
+    setPoints(0);
+  
+  };
   const handlePointsChange = (event) => {
     setPoints(event.target.value);
   };
 
-  const handleAddAction = async() => {
-    await addAction();
-    setSelectedAction(actions[0]);
-    setPoints('');
-    onClose();
-  };
-
   async function addAction() {
-    return fetch(process.env.REACT_APP_BACKEND_HOST+'/action', {
+    return fetch(process.env.REACT_APP_BACKEND_HOST + '/action', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({kid_id: kid_id, action_type: selectedAction.label, points: points })
+      body: JSON.stringify({ kid_id: kid_id, action_type: selectedAction, points: points })
     }).then(data => data.json())
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  async function updateAction() {
+    return fetch(process.env.REACT_APP_BACKEND_HOST+'/action', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({id: action_id, kid_id: kid_id, action_type: selectedAction, points: points})
+    }).then(response => {
+      if (response.status !== 204){
+      console.log("error");
+      }})
       .catch(error => {
           console.log(error);
       });
-   }
+  }
 
   return (
+   
     <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>Add Action</DialogTitle>
+      <DialogTitle>{edit ? "Edit" : "Add"} Points  {selectedLabel} </DialogTitle>
       <DialogContent>
-        <Select value={selectedAction.label} onChange={handleActionChange}>
+        <Select  value={selectedAction} onChange={(event)=> setSelectedAction(event.target.value)}>
           {actions.map(action => (
-            <MenuItem key={action.label} value={action.label}>{action.label}</MenuItem>
+            <MenuItem key={actions.indexOf(action)} value={action}>{action}</MenuItem>
           ))}
         </Select>
-        <input type="number" value={points} onChange={handlePointsChange} placeholder="Enter points" />
+        <TextField type="number" value={points} onChange={handlePointsChange} placeholder="Enter points" />
       </DialogContent>
-      <Button onClick={handleAddAction} disabled={!points}>Add Action</Button>
+      {!edit && <Button onClick={handleAddAction} disabled={!points}>Add Points</Button>}
+      {edit && <Button onClick={handleEditAction} disabled={!points}>Edit Points</Button>}
       <Button onClick={onClose}>Cancel</Button>
     </Dialog>
   );

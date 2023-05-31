@@ -16,9 +16,7 @@ const adminPassword = process.env.ADMIN_PASSWORD;
 const jwtSecret = process.env.JWT_SECRET;
 app.use(cors());
 app.use(bodyParser.json());
-// app.get('/', (req, res) => {
-//   res.status(200).send('Hello, world!').end();
-// });
+
 app.post('/kids', async (req, res) => {
   const { parent_id } = req.body;
   userController.getKidsPerParent(parent_id).then(data => res.json(data));
@@ -99,7 +97,6 @@ app.post('/action', async (req, res) => {
   if (!(kid_id && action_type && points)) {
     res.status(400).send("All input is required");
   }
-  console.log("app.js", kid_id, action_type, points);
   let action = await actionController.addAction({ kid_id: kid_id, action_type: action_type, points: points });
   if (action) {
     res.status(201).send(action);
@@ -107,10 +104,22 @@ app.post('/action', async (req, res) => {
     res.status(500).send('cannot add action');
   }
 });
-// app.use(express.static(path.join(__dirname, 'build')));
+app.put('/action', async (req, res) => {
+  const { id, kid_id, action_type, points } = req.body;
+  if (!(id && kid_id && action_type && points )) {
+    res.status(400).send("All input is required");
+  }
+  let action = await actionController.updateAction({kid_id: kid_id, action_type: action_type, points: points }, id);
+  if (action) {
+    res.status(204);
+  } else {
+    res.status(500);
+  }
+});
+
 
 app.get('/', function (req, res) {
-  res.json('Hello, world New!');
+  res.json('Hello, world!');
 });
 // Start the server
 const PORT = parseInt(process.env.PORT) || 8080;
