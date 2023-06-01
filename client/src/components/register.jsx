@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
@@ -30,10 +30,13 @@ export default function Register({ setToken, setUser, setRegister }) {
   const [name, setName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPassword] = useState();
+  const [confirmPassword, setConfirmPassword] = useState();
   const [address, setAddress] = useState('');
   const [email, setEmail] = useState('')
   const [adminPassword, setAdminPassword] = useState();
   const [error, setError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [mobError, setMobError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [paymentOption, setPaymentOption] = useState();
 
@@ -54,59 +57,65 @@ export default function Register({ setToken, setUser, setRegister }) {
     setPaymentOption(event.target.value);
   };
 
-  async function registerUser(credentials) {
-    return fetch('http://localhost:8080/register', {
+  function registerUser(credentials) {
+     fetch('http://localhost:8080/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(credentials)
     }).then(response => {
-      console.log(response);
-      if(response.status >= 400){
+      if (response.status >= 400) {
         setError(true);
-      if (response.status === 409)
-        setErrorMessage("This mobile number is already in use.");
-      if (response.status === 402)
-        setErrorMessage("Please select your preferred payment method");
-      if (response.status === 400)
-        setErrorMessage("Please fill all the required fields");}
+        setMobError(false);
+        if (response.status === 409){
+          setMobError(true);
+          throw new Error("This mobile number is already in use.");}
+        if (response.status === 402)
+        throw new Error("Please select your preferred payment method");
+        if (response.status === 400)
+        throw new Error("Please fill all the required fields");
+      }
       return response.json();
     })
-      .then(data => data)
-      .catch(error => {
-        console.log(error);
-        setError(true);
-      });
+      .then(data => {
+        setToken(data.token);
+        setUser(data.user);
+      }).catch(error => {
+      setError(true);
+      setErrorMessage(error.message);
+    });
   }
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
 
   const handleSubmit = async e => {
     e.preventDefault();
 
-
-    let result = await registerUser({
-      name,
-      mobileNumber,
-      password,
-      adminPassword,
-      email,
-      address,
-      kids,
-      paymentOption
-    });
-
-    setToken(result?.token);
-    setUser(result?.user);
+    if (confirmPassword !== password) {
+      setError(true);
+      setPasswordError(true);
+      setErrorMessage("The passwords you entered do not match.");
+    }
+    else {
+      setError(false);
+      setPasswordError(false);
+      setErrorMessage("");
+      registerUser({
+        name,
+        mobileNumber,
+        password,
+        adminPassword,
+        email,
+        address,
+        kids,
+        paymentOption
+      });
+    }
 
   }
 
   return (
     <div className="login-wrapper">
       <Container component="main" maxWidth="xs">
-        {error && <Alert severity="error" >{errorMessage}</Alert>}
         <Box
           component="form"
           sx={{
@@ -122,11 +131,11 @@ export default function Register({ setToken, setUser, setRegister }) {
 
           {/* <Typography component="h1" variant="h5"> */}
           <h1>Summer Club 2023</h1>
-          <Typography component={'span'} variant={'body2'}>
+         {!admin && <Typography component={'span'} variant={'body2'}>
             <p> <li>Registration Fee: $25 per child</li>
               <li>Duration: 10 weeks</li></p>
             <p></p>
-            <p style={{  fontWeight: "bold" }}> To complete the registration process, you need to choose one of the following payment options:</p>
+            <p style={{ fontWeight: "bold" }}> To complete the registration process, you need to choose one of the following payment options:</p>
 
             <RadioGroup
               aria-labelledby="demo-controlled-radio-buttons-group"
@@ -145,7 +154,7 @@ export default function Register({ setToken, setUser, setRegister }) {
                 </ol>
                 <p> <img src={qrcode} style={{ display: 'block', margin: 'auto', width: '250px', height: '300px' }} alt="react logo" /> </p>
               </Box>
-              <Box component="span" sx={{ p: 2, border: '1px dashed grey', marginTop: 2,}}>
+              <Box component="span" sx={{ p: 2, border: '1px dashed grey', marginTop: 2, }}>
                 <FormControlLabel value="inPerson" control={<Radio />} label="Option 2: In-Person Payment" />
 
                 <p> If you prefer to make the payment in person, please contact Amy or Sara using the phone numbers provided below:</p>
@@ -159,7 +168,7 @@ export default function Register({ setToken, setUser, setRegister }) {
 
             <p> Should you have any further questions or need assistance, feel free to reach out to Amy or Sara.
             </p>
-          </Typography>
+          </Typography>}
           <h2>Register</h2>
           {/* </Typography> */}
           {/* <Box sx={{ mt: 3 }}> */}
@@ -173,7 +182,7 @@ export default function Register({ setToken, setUser, setRegister }) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                
+
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -184,6 +193,7 @@ export default function Register({ setToken, setUser, setRegister }) {
                 type="tel"
                 value={mobileNumber}
                 onChange={(e) => setMobileNumber(e.target.value)}
+                error={mobError}
                 required
               />
             </Grid>
@@ -219,6 +229,18 @@ export default function Register({ setToken, setUser, setRegister }) {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                error={passwordError}
+                required
+              />
+              <TextField
+                label="Confirm Password"
+                id="confirmPassword"
+                variant="outlined"
+                fullWidth
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                error={passwordError}
                 required
               />
             </Grid>
@@ -288,7 +310,7 @@ export default function Register({ setToken, setUser, setRegister }) {
                 id="adminPassword"
                 value={adminPassword}
                 onChange={(event) => setAdminPassword(event.target.value)}
-                error={error}
+    
               />
             </div>
           }
@@ -312,10 +334,10 @@ export default function Register({ setToken, setUser, setRegister }) {
         </Box>
       </Container >
       <Snackbar open={error} autoHideDuration={6000} >
-            <Alert  severity="error" sx={{ width: '100%' }}>
-             {errorMessage}
-            </Alert>
-          </Snackbar>
+        <Alert severity="error" sx={{ width: '100%' }}>
+          {errorMessage}
+        </Alert>
+      </Snackbar>
     </div >
 
 

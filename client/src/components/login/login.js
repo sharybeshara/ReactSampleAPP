@@ -31,13 +31,15 @@ export default function Login({ setToken, register, setRegister, setUser }) {
       body: JSON.stringify(credentials)
     }).then(response => {
       if (response.status >= 400) {
-        setError(true);
-        setErrorMessage("Invalid Mobile Number or Password. Please try again.");
+       throw new Error("Invalid Mobile Number or Password. Please try again.");
       }
       return response.json();
     }).then(data => {
       setToken(data.token);
       setUser(data.user);
+    }).catch(error => {
+      setError(true);
+      setErrorMessage(error.message);
     })
 
   }
@@ -130,8 +132,8 @@ export default function Login({ setToken, register, setRegister, setUser }) {
         {!register && <Button variant="text" onClick={() => setRegister(true)}>register</Button>}
         <div>
           <Snackbar open={error} autoHideDuration={6000} >
-            <Alert  severity="error" sx={{ width: '100%' }}>
-             {errorMessage}
+            <Alert severity="error" sx={{ width: '100%' }}>
+              {errorMessage}
             </Alert>
           </Snackbar>
 
