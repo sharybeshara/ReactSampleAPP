@@ -15,7 +15,6 @@ export default function KidView({kid, logout, user}) {
         },
         body: JSON.stringify({kid_id: id})
       }).then(response => {
-        console.log(response);
         return response.json();
       })
       .then(data => {
@@ -33,19 +32,21 @@ export default function KidView({kid, logout, user}) {
       <Table  aria-label="simple table">
         <TableHead>
           <TableRow>
-            <TableCell>Name</TableCell>
+            <TableCell>First Name</TableCell>
+            <TableCell align="right">Last Name</TableCell>
             <TableCell align="right">ID</TableCell>
             <TableCell align="right">Points</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
             <TableRow
-              key={kid.name}
+              key={kid.id}
               sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
             >
               <TableCell component="th" scope="row">
-                {kid.name}
+                {kid.first_name}
               </TableCell>
+              <TableCell align="right">{kid.last_name}</TableCell>
               <TableCell align="right">{kid.userid}</TableCell>
               <TableCell align="right">{parseInt(kid.total_points) }</TableCell>
             </TableRow>

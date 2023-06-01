@@ -35,7 +35,7 @@ class UsersController {
     async addKid(kid) {
         let data = {};
         try {
-            kid['userid'] = kid['name'] + this.makeid(4);
+            kid['userid'] = kid['first_name']+kid['last_name'] + this.makeid(4);
             data = await this.db.kids.create(kid);
         } catch (err) {
             console.error('Error::' + err);

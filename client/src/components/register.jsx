@@ -27,7 +27,8 @@ import Container from '@mui/material/Container';
 import './login/login.css';
 
 export default function Register({ setToken, setUser, setRegister }) {
-  const [name, setName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
@@ -40,11 +41,11 @@ export default function Register({ setToken, setUser, setRegister }) {
   const [errorMessage, setErrorMessage] = useState("");
   const [paymentOption, setPaymentOption] = useState();
 
-  const [kids, setKids] = useState([{ name: "", dateOfBirth: dayjs('2022-04-17') }]);
+  const [kids, setKids] = useState([{ first_name: "", last_name: "", dateOfBirth: dayjs('2022-04-17') }]);
 
   const [admin, setAdmin] = useState(false);
   const addKid = () => {
-    setKids([...kids, { name: "", dateOfBirth: dayjs('2022-04-17') }])
+    setKids([...kids, { first_name: "", last_name: "", dateOfBirth: dayjs('2022-04-17') }])
   };
 
   let handleChange = (value, i, name) => {
@@ -58,7 +59,7 @@ export default function Register({ setToken, setUser, setRegister }) {
   };
 
   function registerUser(credentials) {
-     fetch('http://localhost:8080/register', {
+    fetch('http://localhost:8080/register', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -68,13 +69,14 @@ export default function Register({ setToken, setUser, setRegister }) {
       if (response.status >= 400) {
         setError(true);
         setMobError(false);
-        if (response.status === 409){
+        if (response.status === 409) {
           setMobError(true);
-          throw new Error("This mobile number is already in use.");}
+          throw new Error("This mobile number is already in use.");
+        }
         if (response.status === 402)
-        throw new Error("Please select your preferred payment method");
+          throw new Error("Please select your preferred payment method");
         if (response.status === 400)
-        throw new Error("Please fill all the required fields");
+          throw new Error("Please fill all the required fields");
       }
       return response.json();
     })
@@ -82,9 +84,9 @@ export default function Register({ setToken, setUser, setRegister }) {
         setToken(data.token);
         setUser(data.user);
       }).catch(error => {
-      setError(true);
-      setErrorMessage(error.message);
-    });
+        setError(true);
+        setErrorMessage(error.message);
+      });
   }
 
   const handleSubmit = async e => {
@@ -100,7 +102,8 @@ export default function Register({ setToken, setUser, setRegister }) {
       setPasswordError(false);
       setErrorMessage("");
       registerUser({
-        name,
+        firstName,
+        lastName,
         mobileNumber,
         password,
         adminPassword,
@@ -131,7 +134,7 @@ export default function Register({ setToken, setUser, setRegister }) {
 
           {/* <Typography component="h1" variant="h5"> */}
           <h1>Summer Club 2023</h1>
-         {!admin && <Typography component={'span'} variant={'body2'}>
+          {!admin && <Typography component={'span'} variant={'body2'}>
             <p> <li>Registration Fee: $25 per child</li>
               <li>Duration: 10 weeks</li></p>
             <p></p>
@@ -175,17 +178,28 @@ export default function Register({ setToken, setUser, setRegister }) {
           <Grid container spacing={1}>
             <Grid item xs={12} sm={6}>
               <TextField
-                label="Name"
-                id="name"
+                label="First Name"
+                id="firstName"
                 variant="outlined"
                 fullWidth
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
+                required
+              />
+            </Grid>
+            <Grid item xs={12} sm={6}>
+              <TextField
+                label="Last Name"
+                id="lastName"
+                variant="outlined"
+                fullWidth
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
                 required
 
               />
             </Grid>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12}>
               <TextField
                 label="Mobile"
                 variant="outlined"
@@ -247,6 +261,7 @@ export default function Register({ setToken, setUser, setRegister }) {
           </Grid>
           {!admin && <Box
             sx={{
+
               marginTop: 2,
               display: 'flex',
               flexDirection: 'column',
@@ -254,38 +269,60 @@ export default function Register({ setToken, setUser, setRegister }) {
             }}
             noValidate
             autoComplete="off">
+            {/* <Grid container spacing={1}> */}
+            {/* <Grid item xs={12} sm={6}></Grid> */}
+
             <Button onClick={addKid}>Add Kid</Button>
-            <Grid container spacing={1} >
-              {kids.map((kid, i) => {
-                return (
-                  <div key={i}>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                      <DemoContainer components={['DatePicker', 'TextField']}>
-                        <Grid item xs={12} sm={6}>
-                          <TextField
-                            name="name"
-                            fullWidth
-                            label="Kid's Name"
-                            onChange={(e) => handleChange(e.target.value, i, "name")}
-                            value={kid.name || ""}
-                            id="name"
-                          />
+            {/* <Grid container spacing={1} > */}
+            {kids.map((kid, i) => {
+              return (
+                <div key={i}>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <DemoContainer components={['DatePicker', 'TextField']}>
+                      <Box sx={{
+                        p: 2,
+                        marginTop: 2, 
+                        border: '1px dashed grey'
+                      }}>
+                        <Grid container spacing={1} >
+                          <Grid item xs={12} sm={6}>
+                            <TextField
+                              name="firstName"
+                              fullWidth
+                              label="Kid's First Name"
+                              onChange={(e) => handleChange(e.target.value, i, "first_name")}
+                              value={kid.first_name || ""}
+                              id="firstName"
+                            />
+                          </Grid>
+                          <Grid item xs={12} sm={6}>
+                            <TextField
+                              name="lastName"
+                              fullWidth
+                              label="Kid's Last Name"
+                              onChange={(e) => handleChange(e.target.value, i, "last_name")}
+                              value={kid.last_name || ""}
+                              id="lastName"
+                            />
+                          </Grid>
+                          <Grid item xs={12}>
+                            <DatePicker
+                              disableFuture={true}
+                              label="Date Of Birth"
+                              value={kid.dateOfBirth}
+                              onChange={(date) => handleChange(date, i, "dateOfBirth")}
+                            />
+                          </Grid>
                         </Grid>
-                        <Grid item xs={12} sm={6}>
-                          <DatePicker
-                            disableFuture={true}
-                            label="Date Of Birth"
-                            value={kid.dateOfBirth}
-                            onChange={(date) => handleChange(date, i, "dateOfBirth")}
-                          />
-                        </Grid>
-                        <Divider variant="middle" />
-                      </DemoContainer>
-                    </LocalizationProvider>
-                  </div>
-                );
-              })}
-            </Grid>
+                      </Box>
+                      <Divider variant="middle" />
+                    </DemoContainer>
+                  </LocalizationProvider>
+                </div>
+              );
+            })}
+            {/* </Grid> */}
+
           </Box>}
 
           <FormGroup>
@@ -310,7 +347,7 @@ export default function Register({ setToken, setUser, setRegister }) {
                 id="adminPassword"
                 value={adminPassword}
                 onChange={(event) => setAdminPassword(event.target.value)}
-    
+
               />
             </div>
           }

@@ -41,8 +41,9 @@ app.use('/login', async (req, res) => {
   }
 });
 app.use('/register', async (req, res) => {
-  const { name, mobileNumber, password, email, address, kids, paymentOption } = req.body;
-  if (!(mobileNumber && password && name && email && address)) {
+  const { firstName, lastName, mobileNumber, password, email, address, kids, paymentOption } = req.body;
+  console.log(firstName, lastName, mobileNumber, password, email, address, kids, paymentOption);
+  if (!(mobileNumber && password && firstName && lastName && email && address)) {
     return res.status(400).send("All fields are required");
   }
 
@@ -53,7 +54,7 @@ app.use('/register', async (req, res) => {
   const token = jwt.sign({ mobileNumber }, jwtSecret);
 
   if (req.body.adminPassword == adminPassword) {
-    let user = await userController.addUser({ name: name, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "admin", token: token });
+    let user = await userController.addUser({first_name: firstName, last_name: lastName, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "admin", token: token });
     if (user) {
       res.status(201).send({
         token: token,
@@ -68,10 +69,10 @@ app.use('/register', async (req, res) => {
     if(!paymentOption){
       return res.status(402).send("Please select your preferred payment method")
     }
-    let user = await userController.addUser({ name: name, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "parent", token: token, payment_method: paymentOption});
+    let user = await userController.addUser({ first_name: firstName, last_name: lastName,  mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "parent", token: token, payment_method: paymentOption});
     await kids.forEach(kid => {
       kid['parent_id'] = user['id'];
-      userController.addKid({name: kid.name, parent_id: user.id, dateofbirth: new Date(kid.dateOfBirth) });
+      userController.addKid({first_name: kid.first_name, last_name: kid.last_name, parent_id: user.id, dateofbirth: new Date(kid.dateOfBirth) });
     });
     if (user) {
       res.status(201).send({
@@ -149,11 +150,11 @@ app.post('/reset', async (req, res) => {
 
 
 app.put('/user', async (req, res) => {
-  const { id, email, name, mobile, address} = req.body;
-  if (!(id && email && name && mobile && address )) {
+  const { id, email, first_name, last_name, mobile, address} = req.body;
+  if (!(id && email && first_name && last_name  && mobile && address )) {
     res.status(400).send("All input is required");
   }
-  let user = await userController.updateUser({name: name, email: email, address: address, mobile_number: mobile}, id);
+  let user = await userController.updateUser({first_name: first_name, last_name: last_name, email: email, address: address, mobile_number: mobile}, id);
   if (user) {
     res.status(200).send(user);
   } else {

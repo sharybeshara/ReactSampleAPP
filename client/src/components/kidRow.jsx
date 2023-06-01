@@ -92,8 +92,9 @@ export default function KidRow({ kid, getKids, role }) {
                     </IconButton>
                 </TableCell> */}
                 <TableCell component="th" scope="row">
-                    {kid.name}
+                    {kid.first_name}
                 </TableCell>
+                <TableCell align="right">{kid.last_name}</TableCell>
                 <TableCell align="right">{kid.userid}</TableCell>
                 <TableCell align="right">{kid.total_points}</TableCell>
                 <TableCell align="right"><AddBoxIcon onClick={() => { setAddActionDialogOpen(true) }} >
@@ -104,7 +105,7 @@ export default function KidRow({ kid, getKids, role }) {
                     <Collapse in={open} timeout="auto" unmountOnExit>
                         <Box sx={{ margin: 1 }}>
                             <Typography variant="h6" gutterBottom component="div">
-                                {kid.name}'s Points
+                                {kid.first_name}'s Points
                             </Typography>
                             <Table size="small" aria-label="purchases">
                                 <TableHead>

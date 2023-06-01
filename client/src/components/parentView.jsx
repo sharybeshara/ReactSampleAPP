@@ -55,7 +55,8 @@ export default function ParentView({ propParent, logout }) {
                     <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>Name</TableCell>
+                                <TableCell>First Name</TableCell>
+                                <TableCell align="right">Last Name</TableCell>
                                 <TableCell align="right">Mobile Number</TableCell>
                                 <TableCell align="right">Email</TableCell>
                                 <TableCell align="right">Home Address</TableCell>
@@ -68,8 +69,9 @@ export default function ParentView({ propParent, logout }) {
                                 sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                             >
                                 <TableCell component="th" scope="row">
-                                    {parent.name}
+                                    {parent.first_name}
                                 </TableCell>
+                                <TableCell align="right">{parent.last_name}</TableCell>
                                 <TableCell align="right">{parent.mobile_number}</TableCell>
                                 <TableCell align="right">{parent.email}</TableCell>
                                 <TableCell align="right">{parent.address}</TableCell>
@@ -86,7 +88,8 @@ export default function ParentView({ propParent, logout }) {
                     <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
-                                <TableCell>Kid's Name</TableCell>
+                                <TableCell>Kid's First Name</TableCell>
+                                <TableCell align="right">Kid's Last Name</TableCell>
                                 <TableCell align="right">Kid's Date Of Birth</TableCell>
                                 <TableCell align="right">Kid's Total Points</TableCell>
                                 <TableCell align="right">Kid's ID</TableCell>
@@ -102,8 +105,9 @@ export default function ParentView({ propParent, logout }) {
                                         <Button onClick={() => {
                                             setSelectedRow(kid)
                                             setShowKidView(true)
-                                        }}>{kid.name}</Button>
+                                        }}>{kid.first_name}</Button>
                                     </TableCell>
+                                    <TableCell align="right">{kid.last_name}</TableCell>
                                     <TableCell align="right">{kid.dateofbirth}</TableCell>
                                     <TableCell align="right">{parseInt(kid.total_points)}</TableCell>
                                     <TableCell align="right">{kid.userid}</TableCell>
@@ -113,20 +117,21 @@ export default function ParentView({ propParent, logout }) {
                     </Table>
                 </TableContainer>
                 {showKidView && <Dialog open={showKidView} onClose={onClose}>
-                    <DialogTitle>{selectedRow.name}' Points</DialogTitle>
+                    <DialogTitle>{selectedRow.first_name}' Points</DialogTitle>
                     <KidView kid={selectedRow} logout={logout} user="dialog" />
                 </Dialog>}
                 {edit && <Dialog open={edit} onClose={onEditClose}>
                     <DialogTitle>Edit</DialogTitle>
-                    <EditParent id={parent.id} propName={parent.name} propMobile={parent.mobile_number} propAddress={parent.address} propEmail={parent.email} onClose={onEditClose} setParent={setParent} />
+                    <EditParent id={parent.id} propFName={parent.first_name}  propLName={parent.last_name} propMobile={parent.mobile_number} propAddress={parent.address} propEmail={parent.email} onClose={onEditClose} setParent={setParent} />
                 </Dialog>}
             </Box>
         </>
     );
 }
 
-function EditParent({ id, propName, propMobile, propAddress, propEmail, onClose, setParent }) {
-    const [name, setName] = useState(propName);
+function EditParent({ id, propFName, propLName, propMobile, propAddress, propEmail, onClose, setParent }) {
+    const [firstName, setFirstName] = useState(propFName);
+    const [lastName, setLastName] = useState(propLName);
     const [mobileNumber, setMobileNumber] = useState(propMobile);
     const [address, setAddress] = useState(propAddress);
     const [email, setEmail] = useState(propEmail)
@@ -141,7 +146,7 @@ function EditParent({ id, propName, propMobile, propAddress, propEmail, onClose,
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ id: id, email: email, name: name, mobile: mobileNumber, address: address })
+            body: JSON.stringify({ id: id, email: email, first_name: firstName, lastt_name: lastName, mobile: mobileNumber, address: address })
         }).then(response => {
 
                 return response.json();
@@ -170,14 +175,25 @@ function EditParent({ id, propName, propMobile, propAddress, propEmail, onClose,
             <Grid container spacing={1} justifyContent="flex-end">
                 <Grid item xs={12} sm={6}>
                     <TextField
-                        label="Name"
-                        id="name"
+                        label="First Name"
+                        id="firstName"
                         variant="outlined"
                         fullWidth
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        value={firstName}
+                        onChange={(e) => setFirstName(e.target.value)}
                         required
                         autoFocus
+                    />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <TextField
+                        label="Last Name"
+                        id="lastName"
+                        variant="outlined"
+                        fullWidth
+                        value={lastName}
+                        onChange={(e) => setLastName(e.target.value)}
+                        required
                     />
                 </Grid>
                 <Grid item xs={12} sm={6}>

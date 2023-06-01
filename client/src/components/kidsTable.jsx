@@ -39,7 +39,8 @@ export default function KidsTable({ logout, role }) {
           <TableHead>
             <TableRow>
               {/* <TableCell /> */}
-              <TableCell>Name</TableCell>
+              <TableCell>First Name</TableCell>
+              <TableCell align="right">Last Name</TableCell>
               <TableCell align="right">ID</TableCell>
               <TableCell align="right">Total Points</TableCell>
               <TableCell align="right">Add Points</TableCell>
@@ -49,7 +50,7 @@ export default function KidsTable({ logout, role }) {
 
             {kids.filter(((row) => {
               return row.userid.toLowerCase().includes(searchedVal.toLowerCase());
-            })).sort((a, b) => a.name > b.name ? 1 : -1).map((row) => (
+            })).sort((a, b) => a.first_name > b.first_name  ? 1 : -1).map((row) => (
               
                 <KidRow key={row.id} kid={row} getKids={getKids} role={role} />
               
