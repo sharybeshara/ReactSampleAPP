@@ -32,7 +32,7 @@ export default function Register({ setToken, setUser, setRegister }) {
   const [password, setPassword] = useState();
   const [confirmPassword, setConfirmPassword] = useState();
   const [address, setAddress] = useState('');
-  const [email, setEmail] = useState('')
+  const [email, setEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState();
   const [error, setError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);

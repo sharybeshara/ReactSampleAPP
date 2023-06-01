@@ -85,7 +85,6 @@ app.use('/register', async (req, res) => {
 });
 
 app.post('/actions', async (req, res) => {
-  console.log(req.body);
   const kid_id = req.body.kid_id;
   let actions = await actionController.getActionsByKidId(kid_id);
   if (actions) {
@@ -125,13 +124,29 @@ app.post('/user', async (req, res) => {
     res.status(400).send("token is required");
   }
   let user = await userController.getUserByToken(token);
-  console.log("app", user);
+
   if (user) {
     res.status(200).send(user);
   } else {
     res.sendStatus(500);
   }
 });
+
+app.post('/reset', async (req, res) => {
+  const { email, mobile, password} = req.body;
+  if (!(email && mobile && password  )) {
+    res.status(400).send("All input is required");
+  }
+  
+  let user = await userController.resetPassword( mobile,email, password);
+  if (user) {
+    res.status(200).send(user);
+  } else {
+    res.status(400).send("Invalid mobile number or email");
+  }
+ 
+  });
+
 
 app.put('/user', async (req, res) => {
   const { id, email, name, mobile, address} = req.body;
@@ -140,7 +155,6 @@ app.put('/user', async (req, res) => {
   }
   let user = await userController.updateUser({name: name, email: email, address: address, mobile_number: mobile}, id);
   if (user) {
-    console.log(user);
     res.status(200).send(user);
   } else {
     res.sendStatus(500);

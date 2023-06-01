@@ -7,11 +7,10 @@ class UsersController {
 
     constructor() {
         this.db = connect();
-        
     }
-    
+
     async getUsers() {
-        
+
         try {
             const users = await this.db.users.findAll();
             console.log('users:::', users);
@@ -28,17 +27,17 @@ class UsersController {
             const kids = await this.db.kids.findAll();
             console.log('kids:::', kids);
             return kids;
-          } catch (error) {
+        } catch (error) {
             console.error(error);
             return [];
-          }
+        }
     }
     async addKid(kid) {
         let data = {};
         try {
-            kid['userid'] = kid['name']+this.makeid(4);
+            kid['userid'] = kid['name'] + this.makeid(4);
             data = await this.db.kids.create(kid);
-        } catch(err) {
+        } catch (err) {
             console.error('Error::' + err);
             return null;
         }
@@ -50,17 +49,17 @@ class UsersController {
         try {
             // const parent = await this.db.users.findOne({ where: { mobile_number } });
             const kids = await this.db.kids.findAll({
-              where: {
-                parent_id: parent_id
-              }
+                where: {
+                    parent_id: parent_id
+                }
             });
-        
+
             console.log('kids:::', kids);
             return kids;
-          } catch (error) {
+        } catch (error) {
             console.error(error);
             return [];
-          }
+        }
     }
     makeid(length) {
         let result = '';
@@ -68,75 +67,101 @@ class UsersController {
         const charactersLength = characters.length;
         let counter = 0;
         while (counter < length) {
-          result += characters.charAt(Math.floor(Math.random() * charactersLength));
-          counter += 1;
+            result += characters.charAt(Math.floor(Math.random() * charactersLength));
+            counter += 1;
         }
         return result;
     }
-    async findUser(mobile_number){
+    async findUser(mobile_number) {
         const user = await this.db.users.findOne({ where: { mobile_number } });
-        if(user)
+        if (user)
             return true;
         else
             return false;
     }
 
-    async getUserById(id){
+    async getUserById(id) {
         try {
-            const user = await this.db.users.findOne({ where: { id} });
+            const user = await this.db.users.findOne({ where: { id } });
             if (!user) {
-              
-              return null;
+
+                return null;
             }
             return user;
-          } catch (error) {
+        } catch (error) {
             console.error(error);
-           return null;
-          }
+            return null;
+        }
     }
-    async getUserByToken(token){
+    async getUserByToken(token) {
         try {
-            const user = await this.db.users.findOne({ where: { token} });
+            const user = await this.db.users.findOne({ where: { token } });
             if (!user) {
-              
-              return null;
-            
+
+                return null;
+
             }
             return user;
 
-          } catch (error) {
+        } catch (error) {
             console.error(error);
-           return null;
-          }
+            return null;
+        }
     }
 
-    async getUser(mobile_number, password){
+    async getUser(mobile_number, password) {
         try {
-            const user = await this.db.users.findOne({ where: { mobile_number} });
+            const user = await this.db.users.findOne({ where: { mobile_number } });
             if (!user) {
                 console.error('Invalid mobile number or password');
-              return null;
+                return null;
             }
-        
+
             const isPasswordValid = await bcrypt.compare(password, user.password);
-        
+
             if (!isPasswordValid) {
                 console.error('Invalid  mobile number or password');
-              return null;
+                return null;
             }
-        
+
             return user;
-          } catch (error) {
+        } catch (error) {
             console.error(error);
-           return null;
-          }
+            return null;
+        }
+    }
+
+    async resetPassword(mobile_number, email, new_password) {
+        try {
+            let user = await this.db.users.findOne({ where: { mobile_number } });
+            if (!user) {
+                console.error('Invalid mobile number');
+                return null;
+            }
+            if (user.email !== email) {
+                console.error('Invalid email');
+                return null;
+            }
+            user = await this.db.users.update({ password: new_password }, {
+                where: {
+                    mobile_number
+                },
+                returning: true,
+            });
+            return user[1][0];
+
+        }
+        catch (error) {
+            console.error("Invalid mobile number or email");
+            return null;
+        }
     }
 
     async addUser(user) {
         let data = {};
         try {
             data = await this.db.users.create(user);
-        } catch(err) {
+        } catch (err) {
             console.error('Error::' + err);
             return null;
         }
@@ -147,14 +172,14 @@ class UsersController {
         let data = {};
         try {
 
-            data = await this.db.users.update({...user}, {
+            data = await this.db.users.update({ ...user }, {
                 where: {
                     id: id
                 },
                 returning: true,
             });
-            console.log(data[1]);
-        } catch(err) {
+
+        } catch (err) {
             console.error('Error::' + err);
             throw new Error("can't update user");
         }
@@ -169,22 +194,22 @@ class UsersController {
                     id: user_id
                 }
             });
-        } catch(err) {
+        } catch (err) {
             console.error('Error::' + err);
         }
         return data;
-        return {status: `${data.deletedCount > 0 ? true : false}`};
+        return { status: `${data.deletedCount > 0 ? true : false}` };
     }
     async updateKid(kid) {
         let data = {};
         try {
 
-            data = await this.db.kids.update({...kid}, {
+            data = await this.db.kids.update({ ...kid }, {
                 where: {
                     id: kid.id
                 }
             });
-        } catch(err) {
+        } catch (err) {
             console.error('Error::' + err);
             throw new Error("can't update kid");
         }
@@ -199,11 +224,11 @@ class UsersController {
                     id: kid_id
                 }
             });
-        } catch(err) {
+        } catch (err) {
             console.error('Error::' + err);
         }
         return data;
-        return {status: `${data.deletedCount > 0 ? true : false}`};
+        return { status: `${data.deletedCount > 0 ? true : false}` };
     }
 
 }

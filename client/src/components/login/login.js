@@ -3,24 +3,22 @@ import PropTypes from 'prop-types';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Divider from '@mui/material/Divider';
-import Typography from '@mui/material/Typography';
-import Switch from '@mui/material/Switch';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormGroup from '@mui/material/FormGroup';
 import Alert from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
+import Link from '@mui/material/Link';
+import Grid from '@mui/material/Grid';
 import './login.css';
 
-export default function Login({ setToken, register, setRegister, setUser }) {
-  const [name, setName] = useState('');
+export default function Login({ setToken, setRegister, setUser }) {
   const [mobileNumber, setMobileNumber] = useState('');
   const [password, setPassword] = useState();
-  const [adminPassword, setAdminPassword] = useState('');
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
-  const [admin, setAdmin] = useState(false);
+  const [reset, setReset] = useState(false);
+  const [email, setEmail] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState();
+  const [newPassword, setNewPassword] = useState();
+  const [passwordError, setPasswordError] = useState(false);
 
   function loginUser(credentials) {
     fetch(process.env.REACT_APP_BACKEND_HOST + '/login', {
@@ -31,7 +29,7 @@ export default function Login({ setToken, register, setRegister, setUser }) {
       body: JSON.stringify(credentials)
     }).then(response => {
       if (response.status >= 400) {
-       throw new Error("Invalid Mobile Number or Password. Please try again.");
+        throw new Error("Invalid Mobile Number or Password. Please try again.");
       }
       return response.json();
     }).then(data => {
@@ -41,109 +39,142 @@ export default function Login({ setToken, register, setRegister, setUser }) {
       setError(true);
       setErrorMessage(error.message);
     })
-
   }
-  const handleSubmit = e => {
-    e.preventDefault();
-    loginUser({
-      mobileNumber,
-      password
+
+  function resetPassword(credentials) {
+    fetch(process.env.REACT_APP_BACKEND_HOST + '/reset', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(credentials)
+    }).then(response => {
+      if (response.status >= 400) {
+        throw new Error("Invalid Mobile Number or Email. Please try again.");
+      }
+      return response.json();
+    }).then(data => {
+      setToken(data.token);
+      setUser(data.user);
+    }).catch(error => {
+      setError(true);
+      setErrorMessage(error.message);
     });
   }
 
-  return (
-    <div className="login-wrapper">
-      <Box
-        component="form"
-        sx={{
-          '& .MuiTextField-root': { m: 1, width: '25ch' },
-        }}
-        noValidate
-        autoComplete="off"
-        onSubmit={handleSubmit}
-      >
-        {!register && <h2>Login</h2>}
-        {register && <h2>Register</h2>}
-        {/* <form onSubmit={handleSubmit}> */}
-        <div>
-          <TextField
-            label="Mobile"
-            type="tel"
-            id="mobile_number"
-            value={mobileNumber}
-            onChange={(event) => setMobileNumber(event.target.value)}
-            required
-            error={error}
-          />
-        </div>
-        <div>
-          {register &&
+  const handleSubmit = e => {
+      e.preventDefault();
+      if (!reset) {
+        loginUser({
+          mobileNumber,
+          password
+        });
+      }
+      else {
+        if (confirmPassword !== newPassword) {
+          setError(true);
+          setPasswordError(true);
+          setErrorMessage("The passwords you entered do not match.");
+        }
+        else {
+          setError(false);
+          setPasswordError(false);
+          setErrorMessage("");
+          resetPassword({ mobile: mobileNumber, email: email, password: newPassword });
+        }
+      }
+    }
+
+    return (
+      <div className="login-wrapper">
+        <Box
+          component="form"
+          sx={{
+            '& .MuiTextField-root': { m: 1, width: '25ch' },
+          }}
+          noValidate
+          autoComplete="off"
+          onSubmit={handleSubmit}
+        >
+          <h2>{reset ? "Reset Password" : "Login"}</h2>
+
+          <div>
             <TextField
-              label="Name"
-              type="text"
-              id="name"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
+              label="Mobile"
+              type="tel"
+              id="mobile_number"
+              value={mobileNumber}
+              onChange={(event) => setMobileNumber(event.target.value)}
+              required
               error={error}
             />
-          }
-        </div>
-        <div>
-          <TextField
-            label="Password"
+          </div>
+          <div>
+            {!reset && <TextField
+              label="Password"
+              type="password"
+              id="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+              error={error}
+            />}
+          </div>
+          {reset && <div>
+            <TextField
+              label="Email"
+              type="email"
+              id="email"
+              value={email}
+              required
+              onChange={(event) => setEmail(event.target.value)}
+              error={error}
+            />
+          </div>}
+          {reset && <TextField
+            label="New Password"
             type="password"
-            id="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
+            id="newPassword"
+            value={newPassword}
+            onChange={(event) => setNewPassword(event.target.value)}
             required
-            error={error}
-          />
-        </div>
-        <div>
-          {register &&
-            <FormGroup>
-              <FormControlLabel control={<Switch
-                checked={admin}
-                onChange={(event) => setAdmin(event.target.checked)}
-                inputProps={{ 'aria-label': 'controlled' }}
-              />} label="Admin" />
-            </FormGroup>
+            error={passwordError}
+          />}
+          {reset && <TextField
+            label="Confirm Password"
+            type="password"
+            id="confirmPassword"
+            value={confirmPassword}
+            onChange={(event) => setConfirmPassword(event.target.value)}
+            required
+            error={passwordError}
+          />}
+
+          <Grid item><Button type="submit">{reset ? "Reset" : "Login"}</Button></Grid>
+          {!reset &&
+            <Grid item><Button variant="text" onClick={() => setRegister(true)}>register</Button> </Grid>
           }
-          <Divider light />
-          {register && admin &&
-            <div>
-              <Typography gutterBottom variant="body1">
 
-              </Typography>
+          <div>
+            <Snackbar open={error} autoHideDuration={6000} >
+              <Alert severity="error" sx={{ width: '100%' }}>
+                {errorMessage}
+              </Alert>
+            </Snackbar>
 
-              <TextField
-                helperText="Only enter the Admin Password if you are authorized as an administrator."
-                label="Admin Password"
-                type="password"
-                id="adminPassword"
-                value={adminPassword}
-                onChange={(event) => setAdminPassword(event.target.value)}
-                error={error}
-              />
-            </div>}
-        </div>
-        {!register && <Button type="submit">Login</Button>}
-        {register && <Button variant="outlined" type="submit">Register</Button>}
-        {!register && <Button variant="text" onClick={() => setRegister(true)}>register</Button>}
-        <div>
-          <Snackbar open={error} autoHideDuration={6000} >
-            <Alert severity="error" sx={{ width: '100%' }}>
-              {errorMessage}
-            </Alert>
-          </Snackbar>
+          </div>
+          {!reset && <Grid container justifyContent="flex-end">
+            <Grid item>
+              <Link href="#" variant="body2" onClick={() => setReset(true)}>
+                Forgot your password?
+              </Link>
+            </Grid>
+          </Grid>}
+        </Box>
+      </div>
+    )
+  }
 
-        </div>
-        {/* </form> */}
-      </Box>
-    </div>
-  )
-}
-
-Login.propTypes = {
-  setToken: PropTypes.func.isRequired
-};
+  Login.propTypes = {
+    setToken: PropTypes.func.isRequired
+  };
