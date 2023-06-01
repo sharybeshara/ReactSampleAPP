@@ -41,10 +41,12 @@ app.use('/login', async (req, res) => {
   }
 });
 app.use('/register', async (req, res) => {
-  const { name, mobileNumber, password, email, address, kids } = req.body;
-console.log(req.body);
+  const { name, mobileNumber, password, email, address, kids, paymentOption } = req.body;
   if (!(mobileNumber && password && name && email && address)) {
-    res.status(400).send("All fields are required");
+    return res.status(400).send("All fields are required");
+  }
+  if(!paymentOption){
+    return res.status(402).send("Please select your preferred payment method")
   }
 
   if (await userController.findUser(mobileNumber)) {
@@ -54,7 +56,7 @@ console.log(req.body);
   const token = jwt.sign({ mobileNumber }, jwtSecret);
 
   if (req.body.adminPassword == adminPassword) {
-    let user = await userController.addUser({ name: name, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "admin", token: token });
+    let user = await userController.addUser({ name: name, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "admin", token: token, payment_method: paymentOption });
     if (user) {
       res.status(201).send({
         token: token,
@@ -66,7 +68,7 @@ console.log(req.body);
 
   }
   else {
-    let user = await userController.addUser({ name: name, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "parent", token: token});
+    let user = await userController.addUser({ name: name, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "parent", token: token, payment_method: paymentOption});
     await kids.forEach(kid => {
       kid['parent_id'] = user['id'];
       userController.addKid({name: kid.name, parent_id: user.id, dateofbirth: new Date(kid.dateOfBirth) });

@@ -33,6 +33,9 @@ module.exports = (sequelize, DataTypes, Model) => {
     user_role: {
       type: DataTypes.STRING,
     },
+    payment_method:{
+      type: DataTypes.STRING
+    },
     password: {
       type: DataTypes.STRING,
       allowNull: false,

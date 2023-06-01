@@ -3,12 +3,12 @@ import { styled, alpha } from '@mui/material/styles';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
-// import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import InputBase from '@mui/material/InputBase';
-// import MenuIcon from '@mui/icons-material/Menu';
 import SearchIcon from '@mui/icons-material/Search';
 import LogoutIcon from '@mui/icons-material/Logout';
+import GroupIcon from '@mui/icons-material/Group';
+import IconButton from '@mui/material/IconButton';
 
 const Search = styled('div')(({ theme }) => ({
   position: 'relative',
@@ -66,7 +66,7 @@ export default function SearchAppBar({onChangeSearch, logout, user}) {
             aria-label="open drawer"
             sx={{ mr: 2 }}
           >
-            <MenuIcon />
+            <GroupIcon />
           </IconButton> */}
           <Typography
             variant="h6"
@@ -74,7 +74,7 @@ export default function SearchAppBar({onChangeSearch, logout, user}) {
             component="div"
             sx={{ flexGrow: 1, display: { xs: 'none', sm: 'block' } }}
           >
-            Summer Camp 2023
+            Summer Club 2023
           </Typography>
           {user==="admin" &&
           <Search>

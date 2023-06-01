@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
@@ -16,9 +16,13 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import Link from '@mui/material/Link';
 import qrcode from '../qrcode.jpg'
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import Snackbar from '@mui/material/Snackbar';
 
 import Grid from '@mui/material/Grid';
 import Container from '@mui/material/Container';
+
 
 import './login/login.css';
 
@@ -31,6 +35,7 @@ export default function Register({ setToken, setUser, setRegister }) {
   const [adminPassword, setAdminPassword] = useState();
   const [error, setError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [paymentOption, setPaymentOption] = useState();
 
   const [kids, setKids] = useState([{ name: "", dateOfBirth: dayjs('2022-04-17') }]);
 
@@ -45,6 +50,9 @@ export default function Register({ setToken, setUser, setRegister }) {
 
     setKids(newKids);
   };
+  const handlePaymentChange = (event) => {
+    setPaymentOption(event.target.value);
+  };
 
   async function registerUser(credentials) {
     return fetch('http://localhost:8080/register', {
@@ -54,15 +62,26 @@ export default function Register({ setToken, setUser, setRegister }) {
       },
       body: JSON.stringify(credentials)
     }).then(response => {
+      console.log(response);
+      if(response.status >= 400){
+        setError(true);
       if (response.status === 409)
-        setErrorMessage("This mobile number is already in use.")
+        setErrorMessage("This mobile number is already in use.");
+      if (response.status === 402)
+        setErrorMessage("Please select your preferred payment method");
+      if (response.status === 400)
+        setErrorMessage("Please fill all the required fields");}
       return response.json();
     })
       .then(data => data)
       .catch(error => {
+        console.log(error);
         setError(true);
       });
   }
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   const handleSubmit = async e => {
     e.preventDefault();
@@ -75,7 +94,8 @@ export default function Register({ setToken, setUser, setRegister }) {
       adminPassword,
       email,
       address,
-      kids
+      kids,
+      paymentOption
     });
 
     setToken(result?.token);
@@ -101,29 +121,41 @@ export default function Register({ setToken, setUser, setRegister }) {
         >
 
           {/* <Typography component="h1" variant="h5"> */}
-          <h2>Summer Camp 2023</h2>
+          <h1>Summer Club 2023</h1>
           <Typography component={'span'} variant={'body2'}>
             <p> <li>Registration Fee: $25 per child</li>
               <li>Duration: 10 weeks</li></p>
             <p></p>
-            <p>  To complete the registration process, you can choose one of the following payment options:</p>
+            <p style={{  fontWeight: "bold" }}> To complete the registration process, you need to choose one of the following payment options:</p>
 
-            <li>  Option 1: Scan Venmo QR Code</li>
-            <ol>
-              <li> Open the Venmo app on your smartphone.</li>
-              <li> Select the "Scan" option.</li>
-              <li> Align your phone's camera with the provided QR code.</li>
-              <li> Enter the payment amount of $25 and proceed with the payment.</li>
-            </ol>
-            <p> <img src={qrcode} style={{ display: 'block', margin: 'auto', width: '250px', height: '300px' }} alt="react logo" /> </p>
-            <li>Option 2: In-Person Payment</li>
+            <RadioGroup
+              aria-labelledby="demo-controlled-radio-buttons-group"
+              name="controlled-radio-buttons-group"
+              value={paymentOption}
+              onChange={handlePaymentChange}
+            >
+              <Box component="span" sx={{ p: 2, border: '1px dashed grey' }}>
+                <FormControlLabel value="online" control={<Radio />} label="Option 1: Scan Venmo QR Code" />
+                {/* <li>  Option 1: Scan Venmo QR Code</li> */}
+                <ol>
+                  <li> Open the Venmo app on your smartphone.</li>
+                  <li> Select the "Scan" option.</li>
+                  <li> Align your phone's camera with the provided QR code.</li>
+                  <li> Enter the payment amount of $25 and proceed with the payment.</li>
+                </ol>
+                <p> <img src={qrcode} style={{ display: 'block', margin: 'auto', width: '250px', height: '300px' }} alt="react logo" /> </p>
+              </Box>
+              <Box component="span" sx={{ p: 2, border: '1px dashed grey', marginTop: 2,}}>
+                <FormControlLabel value="inPerson" control={<Radio />} label="Option 2: In-Person Payment" />
 
-            <p> If you prefer to make the payment in person, please contact Amy or Sara using the phone numbers provided below:</p>
+                <p> If you prefer to make the payment in person, please contact Amy or Sara using the phone numbers provided below:</p>
 
-            <li>  Amy Bishara: (925) 791-1098</li>
-            <li>  Sara Magdy: (925) 393-8139</li>
+                <li>  Amy Bishara: (925) 791-1098</li>
+                <li>  Sara Magdy: (925) 393-8139</li>
 
-            <p>  They will provide you with the necessary instructions for making the payment and completing the registration process.</p>
+                <p>  They will provide you with the necessary instructions for making the payment and completing the registration process.</p>
+              </Box>
+            </RadioGroup>
 
             <p> Should you have any further questions or need assistance, feel free to reach out to Amy or Sara.
             </p>
@@ -141,7 +173,7 @@ export default function Register({ setToken, setUser, setRegister }) {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
-                autoFocus
+                
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -274,11 +306,16 @@ export default function Register({ setToken, setUser, setRegister }) {
               </Link>
             </Grid>
           </Grid>
-          <Divider  />
-         
-          
+          <Divider />
+
+
         </Box>
       </Container >
+      <Snackbar open={error} autoHideDuration={6000} >
+            <Alert  severity="error" sx={{ width: '100%' }}>
+             {errorMessage}
+            </Alert>
+          </Snackbar>
     </div >
 
 
