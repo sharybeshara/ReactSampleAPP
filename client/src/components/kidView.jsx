@@ -1,9 +1,8 @@
 import * as React from 'react';
 import {Paper, Box, TableCell, TableBody, TableContainer, Table, TableRow, TableHead} from '@mui/material';
 import {useEffect, useState} from 'react';
-import SearchAppBar from './bar';
 
-export default function KidView({kid, logout, user}) {
+export default function KidView({kid}) {
   const [actions, setActions] = useState([]);
 
   useEffect(() => {
@@ -26,7 +25,6 @@ export default function KidView({kid, logout, user}) {
 
   return (
    <>
-   <SearchAppBar  logout={logout} user={user}/>
    <Box sx={{p: 2, bgcolor: 'background.default', gridTemplateColumns: { md: '1fr 1fr' }, gap: 2 }}>
     <TableContainer component={Paper}>
       <Table  aria-label="simple table">

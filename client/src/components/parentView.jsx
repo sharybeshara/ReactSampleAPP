@@ -6,6 +6,8 @@ import KidView from './kidView';
 import { Button, Dialog, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import EditParent from './editParent';
+import IconButton from '@mui/material/IconButton';
+import CloseIcon from '@mui/icons-material/Close';
 
 export default function ParentView({ propParent, logout }) {
     const [kids, setKids] = useState([]);
@@ -111,10 +113,13 @@ export default function ParentView({ propParent, logout }) {
                     </Table>
                 </TableContainer>
                 {showKidView && <Dialog open={showKidView} onClose={onClose}>
-                    <DialogTitle>{selectedRow.first_name}' Points</DialogTitle>
-                    <KidView kid={selectedRow} logout={logout} user="dialog" />
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', p: 2 }}>
+                        <DialogTitle>{selectedRow.first_name}' Points</DialogTitle>
+                        <IconButton onClick={onClose} > <CloseIcon /> </IconButton>
+                    </Box>
+                    <KidView kid={selectedRow}/>
                 </Dialog>}
-                <EditParent id={parent.id} propFName={parent.first_name}  propLName={parent.last_name} propMobile={parent.mobile_number} propAddress={parent.address} propEmail={parent.email} onClose={onEditClose} setParent={setParent} edit={edit}/>
+                <EditParent id={parent.id} propFName={parent.first_name} propLName={parent.last_name} propMobile={parent.mobile_number} propAddress={parent.address} propEmail={parent.email} onClose={onEditClose} setParent={setParent} edit={edit} />
             </Box>
         </>
     );

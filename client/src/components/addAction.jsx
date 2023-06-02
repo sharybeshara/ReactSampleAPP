@@ -68,9 +68,9 @@ export default function AddActionDialog({ isOpen, onClose, kid_id, selectedLabel
         <TextField type="number" value={points} onChange={handlePointsChange} placeholder="Enter points" />
       </DialogContent>
       <DialogActions>
+      <Button onClick={onClose}>Cancel</Button>
       {!edit && <Button onClick={handleAddAction} disabled={!points}>Add Points</Button>}
       {edit && <Button onClick={handleEditAction} disabled={!points}>Edit Points</Button>}
-      <Button onClick={onClose}>Cancel</Button>
       </DialogActions>
     </Dialog>
   );

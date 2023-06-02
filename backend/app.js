@@ -41,7 +41,7 @@ app.use('/login', async (req, res) => {
   }
 });
 app.use('/register', async (req, res) => {
-  const { firstName, lastName, mobileNumber, password, email, address, kids, paymentOption } = req.body;
+  const { firstName, lastName, mobileNumber, password, email, address, kids, paymentOption, admin } = req.body;
   if (!(mobileNumber && password && firstName && lastName && email && address)) {
     return res.status(400).send("All fields are required");
   }
@@ -51,27 +51,36 @@ app.use('/register', async (req, res) => {
   }
 
   const token = jwt.sign({ mobileNumber }, jwtSecret);
-
-  if (req.body.adminPassword == adminPassword) {
-    let user = await userController.addUser({first_name: firstName, last_name: lastName, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "admin", token: token });
-    if (user) {
-     return res.status(201).send({
-        token: token,
-        user: user
-      });
-    } else {
-      return res.status(500).send('cannot create user');
+  if (admin) {
+    if (req.body.adminPassword == adminPassword) {
+      let user = await userController.addUser({ first_name: firstName, last_name: lastName, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "admin", token: token });
+      if (user) {
+        return res.status(201).send({
+          token: token,
+          user: user
+        });
+      } else {
+        return res.status(500).send('Cannot create user');
+      }
     }
-
+    else{
+      return res.status(401).send('Admin passowrd is not correct.');
+    }
   }
   else {
-    if(!paymentOption){
+    if (!paymentOption) {
       return res.status(402).send("Please select your preferred payment method")
     }
-    let user = await userController.addUser({ first_name: firstName, last_name: lastName,  mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "parent", token: token, payment_method: paymentOption});
+    for (let i = 0; i < kids.length; i++) {
+      let kid = kids[i];
+      if (kid.first_name === "" || kid.last_name === "") {
+        return res.status(418).send("Please add your kids.")
+      }
+    }
+    let user = await userController.addUser({ first_name: firstName, last_name: lastName, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "parent", token: token, payment_method: paymentOption });
     await kids.forEach(kid => {
       kid['parent_id'] = user['id'];
-      userController.addKid({first_name: kid.first_name, last_name: kid.last_name, parent_id: user.id, dateofbirth: new Date(kid.dateOfBirth) });
+      userController.addKid({ first_name: kid.first_name, last_name: kid.last_name, parent_id: user.id, dateofbirth: new Date(kid.dateOfBirth) });
     });
     if (user) {
       return res.status(201).send({
@@ -107,10 +116,10 @@ app.post('/action', async (req, res) => {
 });
 app.put('/action', async (req, res) => {
   const { id, kid_id, action_type, points } = req.body;
-  if (!(id && kid_id && action_type && points )) {
-    return  res.status(400).send("All input is required");
+  if (!(id && kid_id && action_type && points)) {
+    return res.status(400).send("All input is required");
   }
-  let action = await actionController.updateAction({kid_id: kid_id, action_type: action_type, points: points }, id);
+  let action = await actionController.updateAction({ kid_id: kid_id, action_type: action_type, points: points }, id);
   if (action) {
     return res.sendStatus(204);
   } else {
@@ -119,8 +128,8 @@ app.put('/action', async (req, res) => {
 });
 
 app.post('/user', async (req, res) => {
-  const { token} = req.body;
-  if (!(token  )) {
+  const { token } = req.body;
+  if (!(token)) {
     return res.status(400).send("token is required");
   }
   let user = await userController.getUserByToken(token);
@@ -132,41 +141,41 @@ app.post('/user', async (req, res) => {
   }
 });
 app.post('/userById', async (req, res) => {
-const {id} = req.body;
-if (!(id )) {
-  return res.status(400).send("Id is required");
-}
-let user = await userController.getUserById(id);
-if (user) {
-  return res.status(200).send(user);
-} else {
-  return res.sendStatus(500);
-}
+  const { id } = req.body;
+  if (!(id)) {
+    return res.status(400).send("Id is required");
+  }
+  let user = await userController.getUserById(id);
+  if (user) {
+    return res.status(200).send(user);
+  } else {
+    return res.sendStatus(500);
+  }
 
 });
 
 app.post('/reset', async (req, res) => {
-  const { email, mobile, password} = req.body;
-  if (!(email && mobile && password  )) {
+  const { email, mobile, password } = req.body;
+  if (!(email && mobile && password)) {
     return res.status(400).send("All input is required");
   }
-  
-  let user = await userController.resetPassword( mobile,email, password);
+
+  let user = await userController.resetPassword(mobile, email, password);
   if (user) {
     return res.status(200).send(user);
   } else {
     return res.status(400).send("Invalid mobile number or email");
   }
- 
-  });
+
+});
 
 
 app.put('/user', async (req, res) => {
-  const { id, email, first_name, last_name, mobile, address} = req.body;
-  if (!(id && email && first_name && last_name  && mobile && address )) {
-   return res.status(400).send("All input is required");
+  const { id, email, first_name, last_name, mobile, address } = req.body;
+  if (!(id && email && first_name && last_name && mobile && address)) {
+    return res.status(400).send("All input is required");
   }
-  let user = await userController.updateUser({first_name: first_name, last_name: last_name, email: email, address: address, mobile_number: mobile}, id);
+  let user = await userController.updateUser({ first_name: first_name, last_name: last_name, email: email, address: address, mobile_number: mobile }, id);
   if (user) {
     return res.status(200).send(user);
   } else {
@@ -175,7 +184,7 @@ app.put('/user', async (req, res) => {
 });
 
 app.delete('/action', async (req, res) => {
-  const {id ,points, kid_id} = req.body;
+  const { id, points, kid_id } = req.body;
   if (!(id && points && kid_id)) {
     return res.status(400).send("Action id is required");
   }

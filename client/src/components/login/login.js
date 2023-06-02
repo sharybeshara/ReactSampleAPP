@@ -61,6 +61,10 @@ export default function Login({ setToken, setRegister, setUser }) {
       setErrorMessage(error.message);
     });
   }
+  const handleReset = () =>{
+    setError(false);
+    setReset(true);
+  }
 
   const handleSubmit = e => {
       e.preventDefault();
@@ -165,7 +169,7 @@ export default function Login({ setToken, setRegister, setUser }) {
           </div>
           {!reset && <Grid container justifyContent="flex-end">
             <Grid item>
-              <Link href="#" variant="body2" onClick={() => setReset(true)}>
+              <Link href="#" variant="body2" onClick={handleReset}>
                 Forgot your password?
               </Link>
             </Grid>

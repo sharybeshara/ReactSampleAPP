@@ -59,11 +59,6 @@ export default function KidsTable({ logout, role }) {
           </TableBody>
         </Table>
       </TableContainer>
-      {/* <AddActionDialog isOpen={addActionDialogOpen} onClose={onClose} kid_id={selectedRow.id} />
-      {showKidView && <Dialog open={showKidView} onClose={onClose}>
-        <DialogTitle>{selectedRow.name}' Actions</DialogTitle>
-        <KidView kid={selectedRow} logout={logout} user="admin" />
-      </Dialog>} */}
     </>
   );
 }

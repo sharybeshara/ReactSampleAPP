@@ -35,15 +35,15 @@ export default function Register({ setToken, setUser, setRegister }) {
   const [address, setAddress] = useState('');
   const [email, setEmail] = useState('');
   const [adminPassword, setAdminPassword] = useState();
+  const [adminPasswordError, setAdminPasswordError] = useState(false);
   const [error, setError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [mobError, setMobError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [paymentOption, setPaymentOption] = useState();
-
   const [kids, setKids] = useState([{ first_name: "", last_name: "", dateOfBirth: dayjs('2022-04-17') }]);
-
   const [admin, setAdmin] = useState(false);
+
   const addKid = () => {
     setKids([...kids, { first_name: "", last_name: "", dateOfBirth: dayjs('2022-04-17') }])
   };
@@ -73,11 +73,17 @@ export default function Register({ setToken, setUser, setRegister }) {
           setMobError(true);
           throw new Error("This mobile number is already in use.");
         }
+        if (response.status === 401) {
+          setAdminPasswordError(true);
+          throw new Error("Sorry, the servant password you entered is incorrect.");
+        }
         if (response.status === 402)
           throw new Error("Please select your preferred payment method");
         if (response.status === 400)
           throw new Error("Please fill all the required fields");
-      }
+      if (response.status === 418)
+          throw new Error("Please add your kid/s info.");
+        }
       return response.json();
     })
       .then(data => {
@@ -110,7 +116,8 @@ export default function Register({ setToken, setUser, setRegister }) {
         email,
         address,
         kids,
-        paymentOption
+        paymentOption,
+        admin
       });
     }
 
@@ -346,6 +353,7 @@ export default function Register({ setToken, setUser, setRegister }) {
                 type="password"
                 id="adminPassword"
                 value={adminPassword}
+                error={adminPasswordError}
                 onChange={(event) => setAdminPassword(event.target.value)}
 
               />
