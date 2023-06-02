@@ -5,8 +5,7 @@ import SearchAppBar from './bar';
 import KidView from './kidView';
 import { Button, Dialog, DialogTitle } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
-import Grid from '@mui/material/Grid';
-import TextField from '@mui/material/TextField';
+import EditParent from './editParent';
 
 export default function ParentView({ propParent, logout }) {
     const [kids, setKids] = useState([]);
@@ -14,9 +13,6 @@ export default function ParentView({ propParent, logout }) {
     const [showKidView, setShowKidView] = useState(false);
     const [edit, setEdit] = useState(false);
     const [parent, setParent] = useState(propParent);
-
-
-
 
     useEffect(() => {
         getKids(parent.id);
@@ -33,9 +29,7 @@ export default function ParentView({ propParent, logout }) {
             .then(data => setKids(data));
     }
 
-
-    async function onClose() {
-        await getKids(parent.id);
+    function onClose() {
         setShowKidView(false);
     }
     const handleEdit = () => {
@@ -120,123 +114,8 @@ export default function ParentView({ propParent, logout }) {
                     <DialogTitle>{selectedRow.first_name}' Points</DialogTitle>
                     <KidView kid={selectedRow} logout={logout} user="dialog" />
                 </Dialog>}
-                {edit && <Dialog open={edit} onClose={onEditClose}>
-                    <DialogTitle>Edit</DialogTitle>
-                    <EditParent id={parent.id} propFName={parent.first_name}  propLName={parent.last_name} propMobile={parent.mobile_number} propAddress={parent.address} propEmail={parent.email} onClose={onEditClose} setParent={setParent} />
-                </Dialog>}
+                <EditParent id={parent.id} propFName={parent.first_name}  propLName={parent.last_name} propMobile={parent.mobile_number} propAddress={parent.address} propEmail={parent.email} onClose={onEditClose} setParent={setParent} edit={edit}/>
             </Box>
         </>
-    );
-}
-
-function EditParent({ id, propFName, propLName, propMobile, propAddress, propEmail, onClose, setParent }) {
-    const [firstName, setFirstName] = useState(propFName);
-    const [lastName, setLastName] = useState(propLName);
-    const [mobileNumber, setMobileNumber] = useState(propMobile);
-    const [address, setAddress] = useState(propAddress);
-    const [email, setEmail] = useState(propEmail)
-
-    const handleEditParent = () => {
-        updateParent();
-        onClose();
-    };
-    const updateParent = () => {
-        fetch(process.env.REACT_APP_BACKEND_HOST + '/user', {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ id: id, email: email, first_name: firstName, lastt_name: lastName, mobile: mobileNumber, address: address })
-        }).then(response => {
-
-                return response.json();
-        }).then(data => {
-            console.log(data);
-            setParent(data);
-        }).catch(error =>
-            console.log(error));
-
-    }
-    return (
-        <Box
-            sx={{
-                borderRadius: 2,
-                p: 2,
-                marginTop: 2,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'right',
-            }}
-            noValidate
-            autoComplete="off"
-        // onSubmit={handleSubmit}
-        >
-            {/* <Grid container justifyContent="flex-end"></Grid> */}
-            <Grid container spacing={1} justifyContent="flex-end">
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="First Name"
-                        id="firstName"
-                        variant="outlined"
-                        fullWidth
-                        value={firstName}
-                        onChange={(e) => setFirstName(e.target.value)}
-                        required
-                        autoFocus
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Last Name"
-                        id="lastName"
-                        variant="outlined"
-                        fullWidth
-                        value={lastName}
-                        onChange={(e) => setLastName(e.target.value)}
-                        required
-                    />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                    <TextField
-                        label="Mobile"
-                        variant="outlined"
-                        fullWidth
-                        type="tel"
-                        value={mobileNumber}
-                        onChange={(e) => setMobileNumber(e.target.value)}
-                        required
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        label="Email"
-                        variant="outlined"
-                        fullWidth
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </Grid>
-                <Grid item xs={12}>
-                    <TextField
-                        label="Address"
-                        variant="outlined"
-                        fullWidth
-                        multiline
-                        rows={3}
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                        required
-                    />
-                </Grid>
-            </Grid>
-            <Grid container justifyContent="flex-end">
-                <Button onClick={onClose} >Cancel </Button>
-                <Button onClick={handleEditParent}>Save</Button>
-            </Grid>
-        </Box>
-
-
     );
 }

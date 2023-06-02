@@ -178,7 +178,7 @@ class UsersController {
                 },
                 returning: true,
             });
-
+            // console.log(data[1][0]);
         } catch (err) {
             console.error('Error::' + err);
             throw new Error("can't update user");

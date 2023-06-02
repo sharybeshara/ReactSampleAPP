@@ -42,7 +42,6 @@ app.use('/login', async (req, res) => {
 });
 app.use('/register', async (req, res) => {
   const { firstName, lastName, mobileNumber, password, email, address, kids, paymentOption } = req.body;
-  console.log(firstName, lastName, mobileNumber, password, email, address, kids, paymentOption);
   if (!(mobileNumber && password && firstName && lastName && email && address)) {
     return res.status(400).send("All fields are required");
   }
@@ -56,12 +55,12 @@ app.use('/register', async (req, res) => {
   if (req.body.adminPassword == adminPassword) {
     let user = await userController.addUser({first_name: firstName, last_name: lastName, mobile_number: mobileNumber, password: password, email: email, address: address, user_role: "admin", token: token });
     if (user) {
-      res.status(201).send({
+     return res.status(201).send({
         token: token,
         user: user
       });
     } else {
-      res.status(500).send('cannot create user');
+      return res.status(500).send('cannot create user');
     }
 
   }
@@ -75,12 +74,12 @@ app.use('/register', async (req, res) => {
       userController.addKid({first_name: kid.first_name, last_name: kid.last_name, parent_id: user.id, dateofbirth: new Date(kid.dateOfBirth) });
     });
     if (user) {
-      res.status(201).send({
+      return res.status(201).send({
         token: token,
         user: user
       });
     } else {
-      res.status(500).send('cannot create user');
+      return res.status(500).send('cannot create user');
     }
   }
 });
@@ -89,59 +88,59 @@ app.post('/actions', async (req, res) => {
   const kid_id = req.body.kid_id;
   let actions = await actionController.getActionsByKidId(kid_id);
   if (actions) {
-    res.status(200).send(actions);
+    return res.status(200).send(actions);
   } else {
-    res.status(400).send('Cannot get actions');
+    return res.status(400).send('Cannot get actions');
   }
 });
 app.post('/action', async (req, res) => {
   const { kid_id, action_type, points } = req.body;
   if (!(kid_id && action_type && points)) {
-    res.status(400).send("All input is required");
+    return res.status(400).send("All input is required");
   }
   let action = await actionController.addAction({ kid_id: kid_id, action_type: action_type, points: points });
   if (action) {
-    res.status(201).send(action);
+    return res.status(201).send(action);
   } else {
-    res.status(500).send('cannot add action');
+    return res.status(500).send('cannot add action');
   }
 });
 app.put('/action', async (req, res) => {
   const { id, kid_id, action_type, points } = req.body;
   if (!(id && kid_id && action_type && points )) {
-    res.status(400).send("All input is required");
+    return  res.status(400).send("All input is required");
   }
   let action = await actionController.updateAction({kid_id: kid_id, action_type: action_type, points: points }, id);
   if (action) {
-    res.sendStatus(204);
+    return res.sendStatus(204);
   } else {
-    res.sendStatus(500);
+    return res.sendStatus(500);
   }
 });
 
 app.post('/user', async (req, res) => {
   const { token} = req.body;
   if (!(token  )) {
-    res.status(400).send("token is required");
+    return res.status(400).send("token is required");
   }
   let user = await userController.getUserByToken(token);
 
   if (user) {
-    res.status(200).send(user);
+    return res.status(200).send(user);
   } else {
-    res.sendStatus(500);
+    return res.sendStatus(500);
   }
 });
 app.post('/userById', async (req, res) => {
 const {id} = req.body;
 if (!(id )) {
-  res.status(400).send("Id is required");
+  return res.status(400).send("Id is required");
 }
 let user = await userController.getUserById(id);
 if (user) {
-  res.status(200).send(user);
+  return res.status(200).send(user);
 } else {
-  res.sendStatus(500);
+  return res.sendStatus(500);
 }
 
 });
@@ -149,14 +148,14 @@ if (user) {
 app.post('/reset', async (req, res) => {
   const { email, mobile, password} = req.body;
   if (!(email && mobile && password  )) {
-    res.status(400).send("All input is required");
+    return res.status(400).send("All input is required");
   }
   
   let user = await userController.resetPassword( mobile,email, password);
   if (user) {
-    res.status(200).send(user);
+    return res.status(200).send(user);
   } else {
-    res.status(400).send("Invalid mobile number or email");
+    return res.status(400).send("Invalid mobile number or email");
   }
  
   });
@@ -165,26 +164,26 @@ app.post('/reset', async (req, res) => {
 app.put('/user', async (req, res) => {
   const { id, email, first_name, last_name, mobile, address} = req.body;
   if (!(id && email && first_name && last_name  && mobile && address )) {
-    res.status(400).send("All input is required");
+   return res.status(400).send("All input is required");
   }
   let user = await userController.updateUser({first_name: first_name, last_name: last_name, email: email, address: address, mobile_number: mobile}, id);
   if (user) {
-    res.status(200).send(user);
+    return res.status(200).send(user);
   } else {
-    res.sendStatus(500);
+    return res.sendStatus(500);
   }
 });
 
 app.delete('/action', async (req, res) => {
   const {id ,points, kid_id} = req.body;
   if (!(id && points && kid_id)) {
-    res.status(400).send("Action id is required");
+    return res.status(400).send("Action id is required");
   }
   let action = await actionController.deleteaction(id, points, kid_id);
   if (action) {
-    res.sendStatus(204)
+    return res.sendStatus(204)
   } else {
-    res.sendStatus(500);
+    return res.sendStatus(500);
   }
 });
 
