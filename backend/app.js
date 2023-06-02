@@ -132,6 +132,19 @@ app.post('/user', async (req, res) => {
     res.sendStatus(500);
   }
 });
+app.post('/userById', async (req, res) => {
+const {id} = req.body;
+if (!(id )) {
+  res.status(400).send("Id is required");
+}
+let user = await userController.getUserById(id);
+if (user) {
+  res.status(200).send(user);
+} else {
+  res.sendStatus(500);
+}
+
+});
 
 app.post('/reset', async (req, res) => {
   const { email, mobile, password} = req.body;

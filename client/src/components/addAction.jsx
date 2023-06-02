@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogTitle, DialogContent, Select, MenuItem, Button, TextField } from '@mui/material';
+import { Dialog, DialogTitle, DialogActions, DialogContent, Select, MenuItem, Button, TextField } from '@mui/material';
 
 const actions = [
   "Behavior", 'Cleanup', 'Attendance', 'Participation', 'Helpful', 'Verse Memorization', 'Song Memorization', 'Games'];
@@ -67,9 +67,11 @@ export default function AddActionDialog({ isOpen, onClose, kid_id, selectedLabel
         </Select>
         <TextField type="number" value={points} onChange={handlePointsChange} placeholder="Enter points" />
       </DialogContent>
+      <DialogActions>
       {!edit && <Button onClick={handleAddAction} disabled={!points}>Add Points</Button>}
       {edit && <Button onClick={handleEditAction} disabled={!points}>Edit Points</Button>}
       <Button onClick={onClose}>Cancel</Button>
+      </DialogActions>
     </Dialog>
   );
 }
