@@ -24,6 +24,19 @@ app.post('/kids', async (req, res) => {
 app.get('/allKids', async (req, res) => {
   userController.getKids().then(data => res.json(data));
 });
+app.post('/kid', async (req, res) => {
+  const {parent_id,first_name, last_name, dateofbirth } = req.body;
+  console.log(parent_id,first_name, last_name, dateofbirth );
+  if (!(first_name && last_name && dateofbirth))
+    return res.status(400).send("All kids are required");
+
+  let kid = await userController.addKid({parent_id: parent_id, first_name: first_name, last_name: last_name, dateofbirth: new Date(dateofbirth) });
+  if (kid)
+    return res.status(200).send(kid);
+  else
+    return res.sendStatus(500);
+});
+
 app.get('/users', async (req, res) => {
   userController.getUsers().then(data => res.json(data));
 });
@@ -63,7 +76,7 @@ app.use('/register', async (req, res) => {
         return res.status(500).send('Cannot create user');
       }
     }
-    else{
+    else {
       return res.status(401).send('Admin passowrd is not correct.');
     }
   }

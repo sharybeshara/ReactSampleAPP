@@ -14,7 +14,6 @@ export default function EditParent({ id, propFName, propLName, propMobile, propA
 
     const handleEditParent =  () => {
         updateParent();
-        // console.log(parent)
         onClose();
     };
     function updateParent()  {

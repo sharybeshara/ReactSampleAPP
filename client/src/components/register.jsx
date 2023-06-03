@@ -41,11 +41,11 @@ export default function Register({ setToken, setUser, setRegister }) {
   const [mobError, setMobError] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [paymentOption, setPaymentOption] = useState();
-  const [kids, setKids] = useState([{ first_name: "", last_name: "", dateOfBirth: dayjs('2022-04-17') }]);
+  const [kids, setKids] = useState([{ first_name: "", last_name: "", dateOfBirth: dayjs() }]);
   const [admin, setAdmin] = useState(false);
 
   const addKid = () => {
-    setKids([...kids, { first_name: "", last_name: "", dateOfBirth: dayjs('2022-04-17') }])
+    setKids([...kids, { first_name: "", last_name: "", dateOfBirth: dayjs() }])
   };
 
   let handleChange = (value, i, name) => {

@@ -200,18 +200,18 @@ class UsersController {
         return data;
         return { status: `${data.deletedCount > 0 ? true : false}` };
     }
-    async updateKid(kid) {
+    async updateKid(kid,id) {
         let data = {};
         try {
 
             data = await this.db.kids.update({ ...kid }, {
                 where: {
-                    id: kid.id
+                    id: id
                 }
             });
         } catch (err) {
             console.error('Error::' + err);
-            throw new Error("can't update kid");
+          
         }
         return data;
     }
