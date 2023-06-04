@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import TextField from '@mui/material/TextField';
 import { Button, Box } from '@mui/material';
@@ -10,36 +10,37 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 
-export default function NewKid({ parent_id, show, onClose, setKids }) {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [dateOfBirth, setDateOfBirth] = useState(dayjs());
+export default function EditKid({ kid, onClose, open, setKids }) {
+    const [firstName, setFirstName] = useState(kid.first_name);
+    const [lastName, setLastName] = useState(kid.last_name);
+    const [dateOfBirth, setDateOfBirth] = useState(dayjs(kid.dateofbirth));
 
-
-    const addKid = () => {
-        addNewKid();
+    const editKid = () => {
+        updateKid();
         onClose();
     };
-    function addNewKid() {
+    function updateKid() {
         fetch(process.env.REACT_APP_BACKEND_HOST + '/kid', {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({parent_id: parent_id, first_name: firstName, last_name: lastName, dateofbirth: dateOfBirth })
+            body: JSON.stringify({ id: kid.id, first_name: firstName, last_name: lastName, dateofbirth: dateOfBirth })
         }).then(response => {
             if (!response.ok) {
                 throw new Error('Error in server');
             }
             return response.json();
         })
-        .then(data => setKids(current => [...current, data]))
+        .then(data => setKids(current => (current.map(
+              el => el.id === data.id?  data : el
+            ))))
             .catch(error => console.log(error));
 
     }
     return (
-        <Dialog open={show} onClose={onClose}>
-            <DialogTitle>Add Kid</DialogTitle>
+        <Dialog open={open} onClose={onClose}>
+            <DialogTitle>Edit Kid's Info</DialogTitle>
             <Box
                 sx={{
                     borderRadius: 2,
@@ -51,8 +52,8 @@ export default function NewKid({ parent_id, show, onClose, setKids }) {
                 }}
                 noValidate
                 autoComplete="off"
-
-            ><LocalizationProvider dateAdapter={AdapterDayjs}>
+            >
+               <LocalizationProvider dateAdapter={AdapterDayjs}>
                     <DemoContainer components={['DatePicker', 'TextField', 'TextField']}>
                         <Grid container spacing={1} justifyContent="flex-end">
                             <Grid item xs={12} sm={6}>
@@ -64,6 +65,7 @@ export default function NewKid({ parent_id, show, onClose, setKids }) {
                                     value={firstName}
                                     onChange={(e) => setFirstName(e.target.value)}
                                     required
+                                    autoFocus
                                 />
                             </Grid>
                             <Grid item xs={12} sm={6}>
@@ -88,10 +90,10 @@ export default function NewKid({ parent_id, show, onClose, setKids }) {
                         </Grid>
                         <Grid container justifyContent="flex-end">
                             <Button onClick={onClose} >Cancel </Button>
-                            <Button onClick={addKid} >Add</Button>
+                            <Button onClick={editKid} >Save</Button>
                         </Grid>
                     </DemoContainer>
-                </LocalizationProvider>
+            </LocalizationProvider>
             </Box>
         </Dialog>
     );

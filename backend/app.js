@@ -36,6 +36,18 @@ app.post('/kid', async (req, res) => {
   else
     return res.sendStatus(500);
 });
+app.put('/kid', async (req, res) => {
+  const {id,first_name, last_name, dateofbirth } = req.body;
+  console.log(id,first_name, last_name, dateofbirth );
+  if (!(first_name && last_name && dateofbirth))
+    return res.status(400).send("All kids are required");
+
+  let kid = await userController.updateKid({first_name: first_name, last_name: last_name, dateofbirth: new Date(dateofbirth) }, id);
+  if (kid)
+    return res.status(200).send(kid);
+  else
+    return res.sendStatus(500);
+});
 
 app.get('/users', async (req, res) => {
   userController.getUsers().then(data => res.json(data));

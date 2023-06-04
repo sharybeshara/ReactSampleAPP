@@ -9,6 +9,7 @@ import EditParent from './editParent';
 import IconButton from '@mui/material/IconButton';
 import CloseIcon from '@mui/icons-material/Close';
 import NewKid from './newKid';
+import EditKid from './editKid';
 
 export default function ParentView({ propParent, logout }) {
     const [kids, setKids] = useState([]);
@@ -16,9 +17,10 @@ export default function ParentView({ propParent, logout }) {
     const [showKidView, setShowKidView] = useState(false);
     const [edit, setEdit] = useState(false);
     const [parent, setParent] = useState(propParent);
-    // const [editKids, setEditKids] = useState(false);
-    // const [selectedKid, setSelectedKid] = useState({});
+    const [selectedKid, setSelectedKid] = useState(0);
+    const [openEditKid, setOpenEditKid] = useState(false);
     const [openNewKid, setOpenNewKid] = useState(false);
+
     useEffect(() => {
         getKids(parent.id);
     }, [parent.id]);
@@ -30,32 +32,22 @@ export default function ParentView({ propParent, logout }) {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({ parent_id: id })
-        }).then(response =>  response.json())
+        }).then(response => { return response.json() })
             .then(data => setKids(data));
     }
 
     function onClose() {
+        setOpenEditKid(false);
         setShowKidView(false);
         setOpenNewKid(false);
+        setEdit(false);
     }
     const handleEdit = () => {
         setEdit(true);
     };
-    const onEditClose = async () => {
+    const onEditClose = () => {
         setEdit(false);
     };
-    // const onEditKidClose = () => {
-    //     setEditKids(false);
-    // };
-
-    // const handleEditKids = (kid) => {
-    //     setSelectedKid(kid);
-
-
-    //     console.log(selectedKid, kid);
-    //     setEditKids(true);
-    // }
-
 
     return (
         <>
@@ -86,7 +78,7 @@ export default function ParentView({ propParent, logout }) {
                                 <TableCell align="right">{parent.email}</TableCell>
                                 <TableCell align="right">{parent.address}</TableCell>
                                 <TableCell align="right" component="th" scope="row">
-                                    <EditIcon onClick={() => handleEdit()} />
+                                 <IconButton onClick={() => handleEdit()}>   <EditIcon  /> </IconButton>
                                 </TableCell>
                             </TableRow>
                         </TableBody>
@@ -94,9 +86,9 @@ export default function ParentView({ propParent, logout }) {
                 </TableContainer>
             </Box>
             <Box display="flex" justifyContent="flex-end">
-            <Button align="right" variant="contained" onClick={() => setOpenNewKid(true)} >
-                Add New Kid
-            </Button>
+                <Button align="right" variant="contained" onClick={() => {setOpenNewKid(true); setOpenEditKid(false);}} >
+                    Add New Kid
+                </Button>
             </Box>
             <Box sx={{ p: 2, bgcolor: 'background.default', gridTemplateColumns: { md: '1fr 1fr' }, gap: 2 }}>
                 <TableContainer component={Paper}>
@@ -112,7 +104,7 @@ export default function ParentView({ propParent, logout }) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {kids.map((kid) => (
+                            {kids.map((kid, i) => (
                                 <TableRow
                                     key={kid.id}
                                     sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -120,7 +112,6 @@ export default function ParentView({ propParent, logout }) {
                                     <TableCell component="th" scope="row">
                                         <Button onClick={() => {
                                             setSelectedRow(kid)
-                                            console.log(selectedRow)
                                             setShowKidView(true)
                                         }}>{kid.first_name}</Button>
                                     </TableCell>
@@ -128,8 +119,11 @@ export default function ParentView({ propParent, logout }) {
                                     <TableCell align="right">{kid.dateofbirth}</TableCell>
                                     <TableCell align="right">{parseInt(kid.total_points)}</TableCell>
                                     <TableCell align="right">{kid.userid}</TableCell>
-                                    {/* <TableCell align="right" component="th" scope="row">
-                                        <IconButton onClick={() => handleEditKids(kid)}> <EditIcon /></IconButton></TableCell> */}
+                                    <TableCell align="right" component="th" scope="row">
+                                        <IconButton onClick={() => {
+                                            setSelectedKid(i);
+                                            setOpenEditKid(true);
+                                        }}> <EditIcon /></IconButton></TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>
@@ -142,9 +136,9 @@ export default function ParentView({ propParent, logout }) {
                     </Box>
                     <KidView kid={selectedRow} />
                 </Dialog>}
-                <EditParent id={parent.id} propFName={parent.first_name} propLName={parent.last_name} propMobile={parent.mobile_number} propAddress={parent.address} propEmail={parent.email} onClose={onEditClose} setParent={setParent} edit={edit} />
-                {/* <EditKid kid={selectedKid} id={selectedKid.id} propL={selectedKid.last_name} open={editKids} propF={selectedKid.first_name} propD={selectedKid.dateofbirth} onClose={onEditKidClose} edit={editKids} /> */}
-                <NewKid parent_id={parent.id} show={openNewKid} onClose={onClose} setKids={setKids} />
+                <EditParent id={parent.id} propFName={parent.first_name} propLName={parent.last_name} propMobile={parent.mobile_number} propAddress={parent.address} propEmail={parent.email} onClose={onClose} setParent={setParent} edit={edit} />
+               {openEditKid && <EditKid kid={kids[selectedKid]} onClose={onClose} open={openEditKid} setKids={setKids}/>}
+                <NewKid parent_id={parent.id} show={openNewKid} onClose={onClose} setKids={setKids} kid={kids[selectedKid]} edit={openEditKid} />
             </Box>
         </>
     );

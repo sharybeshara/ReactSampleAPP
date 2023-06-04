@@ -207,13 +207,14 @@ class UsersController {
             data = await this.db.kids.update({ ...kid }, {
                 where: {
                     id: id
-                }
+                },
+                returning: true,
             });
         } catch (err) {
             console.error('Error::' + err);
           
         }
-        return data;
+        return data[1][0];
     }
 
     async deleteKid(kid_id) {
