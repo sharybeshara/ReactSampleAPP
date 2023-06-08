@@ -10,16 +10,16 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Collapse from '@mui/material/Collapse';
 import AddActionDialog from './addAction';
-import AddBoxIcon from '@mui/icons-material/AddBox';
+// import AddBoxIcon from '@mui/icons-material/AddBox';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 import ContactEmergencyIcon from '@mui/icons-material/ContactEmergency';
-import { Button, Dialog, DialogTitle, DialogActions } from '@mui/material';
+import { Button, Dialog, DialogTitle, DialogActions, Checkbox } from '@mui/material';
 
 import { useEffect, useState } from 'react';
 
-export default function KidRow({ kid, getKids, role, index}) {
+export default function KidRow({ kid, getKids, role, index, handleSelectKid, isSelected }) {
     const [open, setOpen] = useState(false);
     const [actions, setActions] = useState([]);
     const [addActionDialogOpen, setAddActionDialogOpen] = useState(false);
@@ -113,8 +113,14 @@ export default function KidRow({ kid, getKids, role, index}) {
                 <TableCell align="right">{kid.last_name}</TableCell>
                 <TableCell align="right">{kid.userid}</TableCell>
                 <TableCell align="right">{kid.total_points}</TableCell>
-                <TableCell align="right"> <IconButton onClick={() => { setAddActionDialogOpen(true) }}><AddBoxIcon  >
-                </AddBoxIcon></IconButton></TableCell>
+                <TableCell align="right">
+                    <Checkbox
+                        checked={isSelected(kid.id)}
+                        onChange={() => handleSelectKid(kid.id)}
+                        color="primary"
+                    /></TableCell>
+                {/* <TableCell align="right"> <IconButton onClick={() => { setAddActionDialogOpen(true) }}><AddBoxIcon  > */}
+                {/* </AddBoxIcon></IconButton></TableCell> */}
             </TableRow>
             <TableRow>
                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>

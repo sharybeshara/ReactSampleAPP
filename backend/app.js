@@ -139,6 +139,20 @@ app.post('/action', async (req, res) => {
     return res.status(500).send('cannot add action');
   }
 });
+app.post('/groupAction', async (req, res) => {
+  const { ids, action_type, points } = req.body;
+  if (!(ids && action_type && points)) {
+    return res.status(400).send("All input is required");
+  }
+  let actions = ids.map(id => {return { kid_id: id, action_type: action_type, points: points }});
+  // let action = await actionController.addAction({ kid_id: kid_id, action_type: action_type, points: points });
+  let result = await actionController.addActions(actions, ids);
+  if (result) {
+    return res.status(201).send(result);
+  } else {
+    return res.status(500).send('cannot add action');
+  }
+});
 app.put('/action', async (req, res) => {
   const { id, kid_id, action_type, points } = req.body;
   if (!(id && kid_id && action_type && points)) {

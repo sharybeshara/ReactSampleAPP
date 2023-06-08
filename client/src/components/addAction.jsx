@@ -4,12 +4,12 @@ import { Dialog, DialogTitle, DialogActions, DialogContent, Select, MenuItem, Bu
 const actions = [
   "Behavior", 'Cleanup', 'Attendance', 'Participation', 'Helpful', 'Verse Memorization', 'Song Memorization', 'Games'];
 
-export default function AddActionDialog({ isOpen, onClose, kid_id, selectedLabel, pastPoints, edit, action_id }) {
+export default function AddActionDialog({ isOpen, onClose, kid_id, selectedLabel, pastPoints, edit, action_id, selectedIds }) {
   const [selectedAction, setSelectedAction] = useState(selectedLabel||actions[0]);
   const [points, setPoints] = useState(pastPoints||0);
   
   const handleAddAction =  async() => {
-    await addAction();
+    await addGroupAction();
     onClose();
     setSelectedAction(actions[0]);
     setPoints(0);
@@ -26,13 +26,26 @@ export default function AddActionDialog({ isOpen, onClose, kid_id, selectedLabel
     setPoints(event.target.value);
   };
 
-  async function addAction() {
-    return fetch(process.env.REACT_APP_BACKEND_HOST + '/action', {
+  // async function addAction() {
+  //   return fetch(process.env.REACT_APP_BACKEND_HOST + '/action', {
+  //     method: 'POST',
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify({ kid_id: kid_id, action_type: selectedAction, points: points })
+  //   }).then(data => data.json())
+  //     .catch(error => {
+  //       console.log(error);
+  //     });
+  // }
+
+  async function addGroupAction() {
+    return fetch(process.env.REACT_APP_BACKEND_HOST + '/groupAction', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ kid_id: kid_id, action_type: selectedAction, points: points })
+      body: JSON.stringify({ ids: selectedIds, action_type: selectedAction, points: points })
     }).then(data => data.json())
       .catch(error => {
         console.log(error);

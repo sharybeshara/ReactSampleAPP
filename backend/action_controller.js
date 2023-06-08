@@ -35,6 +35,17 @@ class ActionsController {
         }
         return data;
     }
+    async addActions(actions, ids) {
+        let data = {};
+        try {
+            data = await this.db.actions.bulkCreate(actions);
+           await this.db.kids.increment('total_points', { by: actions[0].points, where: { id: ids}});
+        } catch(err) {
+            console.error('Error::' + err);
+            return null;
+        }
+        return data;
+    }
     async updateAction(action, id) {
         let data = {};
         try {
