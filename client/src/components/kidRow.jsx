@@ -19,7 +19,7 @@ import { Button, Dialog, DialogTitle, DialogActions } from '@mui/material';
 
 import { useEffect, useState } from 'react';
 
-export default function KidRow({ kid, getKids, role }) {
+export default function KidRow({ kid, getKids, role, index}) {
     const [open, setOpen] = useState(false);
     const [actions, setActions] = useState([]);
     const [addActionDialogOpen, setAddActionDialogOpen] = useState(false);
@@ -102,6 +102,11 @@ export default function KidRow({ kid, getKids, role }) {
                         {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                     </IconButton>
                 </TableCell> */}
+                <TableCell scope="row">
+                    <Box sx={{ fontWeight: 'bold' }}>
+                            {index + 1 + ')'}
+                    </Box>
+                </TableCell>
                 <TableCell component="th" scope="row">
                     {kid.first_name}
                 </TableCell>

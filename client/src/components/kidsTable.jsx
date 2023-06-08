@@ -38,7 +38,7 @@ export default function KidsTable({ logout, role }) {
         <Table aria-label="collapsible table">
           <TableHead>
             <TableRow>
-              {/* <TableCell /> */}
+              <TableCell />
               <TableCell>First Name</TableCell>
               <TableCell align="right">Last Name</TableCell>
               <TableCell align="right">ID</TableCell>
@@ -50,9 +50,9 @@ export default function KidsTable({ logout, role }) {
 
             {kids.filter(((row) => {
               return row.userid.toLowerCase().includes(searchedVal.toLowerCase());
-            })).sort((a, b) => a.first_name > b.first_name  ? 1 : -1).map((row) => (
+            })).sort((a, b) => a.first_name > b.first_name  ? 1 : -1).map((row, i) => (
               
-                <KidRow key={row.id} kid={row} getKids={getKids} role={role} />
+                <KidRow key={row.id} kid={row} getKids={getKids} role={role} index={i} />
               
             ))}
 
