@@ -104,7 +104,7 @@ export default function KidRow({ kid, getKids, role, index, handleSelectKid, isS
                 </TableCell> */}
                 <TableCell scope="row">
                     <Box sx={{ fontWeight: 'bold' }}>
-                            {index + 1 + ')'}
+                        {index + 1 + ')'}
                     </Box>
                 </TableCell>
                 <TableCell component="th" scope="row">
@@ -116,7 +116,10 @@ export default function KidRow({ kid, getKids, role, index, handleSelectKid, isS
                 <TableCell align="right">
                     <Checkbox
                         checked={isSelected(kid.id)}
-                        onChange={() => handleSelectKid(kid.id)}
+                        onChange={() => {
+                            setOpen(false)
+                            handleSelectKid(kid.id)
+                        }}
                         color="primary"
                     /></TableCell>
                 {/* <TableCell align="right"> <IconButton onClick={() => { setAddActionDialogOpen(true) }}><AddBoxIcon  > */}
