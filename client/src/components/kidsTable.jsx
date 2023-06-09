@@ -52,6 +52,7 @@ export default function KidsTable({ logout, role }) {
   const onClose = async () => {
     // await getActions(kid.id);
     await getKids();
+    setSelectedIds([]);
     // setSelectedLabel('');
     // setSelectedPoints(0);
     setAddActionDialogOpen(false);
