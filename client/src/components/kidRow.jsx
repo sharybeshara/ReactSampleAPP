@@ -137,7 +137,6 @@ export default function KidRow({ kid, getKids, role, index, handleSelectKid, isS
                                 <Typography variant="h6" gutterBottom component="div">
                                     {kid.first_name}'s Points
                                 </Typography>
-                                {/* <RedeemIcon color="success" /> */}
                                 <Button variant="outlined" color="success" size="small" startIcon={<RedeemIcon />} onClick={() => {
                                     setRedeem(true)
                                     setAddActionDialogOpen(true)
