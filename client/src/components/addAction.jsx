@@ -4,7 +4,7 @@ import { Dialog, DialogTitle, DialogActions, DialogContent, Select, MenuItem, Bu
 const actions = [
   "Behavior", 'Cleanup', 'Attendance', 'Participation', 'Helpful', 'Verse Memorization', 'Song Memorization', 'Games'];
 
-export default function AddActionDialog({ isOpen, onClose, kid_id, selectedLabel, pastPoints, edit, action_id, selectedIds }) {
+export default function AddActionDialog({ isOpen, onClose, kid_id, selectedLabel, pastPoints, edit, action_id, selectedIds, redeem }) {
   const [selectedAction, setSelectedAction] = useState(selectedLabel||actions[0]);
   const [points, setPoints] = useState(pastPoints||0);
   
@@ -20,24 +20,28 @@ export default function AddActionDialog({ isOpen, onClose, kid_id, selectedLabel
     onClose();
     setSelectedAction(actions[0]);
     setPoints(0);
-  
+  };
+  const handleRedeemAction = async() => {
+    await redeemPoints();
+    onClose();
+    setPoints(0);
   };
   const handlePointsChange = (event) => {
     setPoints(event.target.value);
   };
 
-  // async function addAction() {
-  //   return fetch(process.env.REACT_APP_BACKEND_HOST + '/action', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({ kid_id: kid_id, action_type: selectedAction, points: points })
-  //   }).then(data => data.json())
-  //     .catch(error => {
-  //       console.log(error);
-  //     });
-  // }
+  async function redeemPoints() {
+    return fetch(process.env.REACT_APP_BACKEND_HOST + '/action', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ kid_id: kid_id, action_type: "Redeem", points: parseInt(points*-1) })
+    }).then(data => data.json())
+      .catch(error => {
+        console.log(error);
+      });
+  }
 
   async function addGroupAction() {
     return fetch(process.env.REACT_APP_BACKEND_HOST + '/groupAction', {
@@ -71,18 +75,19 @@ export default function AddActionDialog({ isOpen, onClose, kid_id, selectedLabel
   return (
    
     <Dialog open={isOpen} onClose={onClose}>
-      <DialogTitle>{edit ? "Edit" : "Add"} Points  {selectedLabel} </DialogTitle>
+      <DialogTitle>{edit? "Edit" : redeem? "Redeem":"Add"}Points </DialogTitle>
       <DialogContent>
-        <Select  value={selectedAction} onChange={(event)=> setSelectedAction(event.target.value)}>
+        {!redeem && <Select  value={selectedAction} onChange={(event)=> setSelectedAction(event.target.value)}>
           {actions.map(action => (
             <MenuItem key={actions.indexOf(action)} value={action}>{action}</MenuItem>
           ))}
-        </Select>
+        </Select>}
         <TextField type="number" value={points} onChange={handlePointsChange} placeholder="Enter points" />
       </DialogContent>
       <DialogActions>
       <Button onClick={onClose}>Cancel</Button>
-      {!edit && <Button onClick={handleAddAction} disabled={!points}>Add Points</Button>}
+      {redeem &&   <Button onClick={handleRedeemAction} disabled={!points}>Redeem Points</Button>}
+      {!edit && !redeem &&  <Button onClick={handleAddAction} disabled={!points}>Add Points</Button>}
       {edit && <Button onClick={handleEditAction} disabled={!points}>Edit Points</Button>}
       </DialogActions>
     </Dialog>

@@ -10,7 +10,9 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Collapse from '@mui/material/Collapse';
 import AddActionDialog from './addAction';
-// import AddBoxIcon from '@mui/icons-material/AddBox';
+import { red, blueGrey } from '@mui/material/colors';
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import RedeemIcon from '@mui/icons-material/Redeem';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
@@ -28,6 +30,7 @@ export default function KidRow({ kid, getKids, role, index, handleSelectKid, isS
     const [selectedAction, setSelectedAction] = useState(0);
     const [edit, setEdit] = useState(false);
     const [showParent, setShowParent] = useState(false);
+    const [redeem, setRedeem] = useState(false);
 
     const onClose = async () => {
         await getActions(kid.id);
@@ -36,6 +39,7 @@ export default function KidRow({ kid, getKids, role, index, handleSelectKid, isS
         setSelectedPoints(0);
         setAddActionDialogOpen(false);
         setEdit(false);
+        setRedeem(false);
     }
 
     const getActions = async (id) => {
@@ -133,7 +137,15 @@ export default function KidRow({ kid, getKids, role, index, handleSelectKid, isS
                                 <Typography variant="h6" gutterBottom component="div">
                                     {kid.first_name}'s Points
                                 </Typography>
-                                <IconButton onClick={() => showParentDetails()}> <ContactEmergencyIcon /> </IconButton>
+                                {/* <RedeemIcon color="success" /> */}
+                                <Button variant="outlined" color="success" size="small" startIcon={<RedeemIcon />} onClick={() => {
+                                    setRedeem(true)
+                                    setAddActionDialogOpen(true)
+                                }}>
+                                    Redeem
+                                </Button>
+                                <IconButton onClick={() => { setAddActionDialogOpen(true) }}> <AddCircleOutlineIcon color="primary" /> </IconButton>
+                                <IconButton onClick={() => showParentDetails()}> <ContactEmergencyIcon sx={{ color: blueGrey[500] }} /> </IconButton>
                             </Box>
                             <Table size="small" aria-label="purchases">
                                 <TableHead>
@@ -151,8 +163,8 @@ export default function KidRow({ kid, getKids, role, index, handleSelectKid, isS
                                             </TableCell>
                                             <TableCell>{parseInt(action.points)}</TableCell>
                                             {role === "super" && <TableCell align="right" component="th" scope="row">
-                                                <IconButton onClick={() => handleEdit(action.id, action.action_type, parseInt(action.points))}> <EditIcon /></IconButton>
-                                                <IconButton onClick={() => handleDelete(action.id, action.points)} > <DeleteIcon /> </IconButton>
+                                                <IconButton onClick={() => handleEdit(action.id, action.action_type, parseInt(action.points))}> <EditIcon sx={{ color: blueGrey[500] }} /></IconButton>
+                                                <IconButton onClick={() => handleDelete(action.id, action.points)} > <DeleteIcon sx={{ color: red[700] }} /> </IconButton>
                                             </TableCell>}
                                         </TableRow>
                                     ))}
@@ -162,8 +174,9 @@ export default function KidRow({ kid, getKids, role, index, handleSelectKid, isS
                     </Collapse>
                 </TableCell>
             </TableRow>
-            {!edit && <AddActionDialog isOpen={addActionDialogOpen} onClose={onClose} kid_id={kid.id} />}
-            {edit && <AddActionDialog isOpen={addActionDialogOpen} onClose={onClose} kid_id={kid.id} selectedLabel={selectedLabel} pastPoints={selectedPoints} edit={edit} action_id={selectedAction} />}
+            {!edit && <AddActionDialog isOpen={addActionDialogOpen} onClose={onClose} kid_id={kid.id} selectedIds={[kid.id]} />}
+            {edit && <AddActionDialog isOpen={addActionDialogOpen} onClose={onClose} kid_id={kid.id} selectedLabel={selectedLabel} pastPoints={selectedPoints} edit={edit} action_id={selectedAction} redeem={false} />}
+            {redeem && <AddActionDialog isOpen={addActionDialogOpen} onClose={onClose} kid_id={kid.id} selectedIds={[kid.id]} redeem={redeem} />}
             {showParent && <ParentDialog id={kid.parent_id} showParent={showParent} setShowParent={setShowParent} />}
         </React.Fragment>
     );
