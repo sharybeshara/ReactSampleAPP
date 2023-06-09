@@ -173,7 +173,7 @@ export default function KidRow({ kid, getKids, role, index, handleSelectKid, isS
                     </Collapse>
                 </TableCell>
             </TableRow>
-            {!edit && <AddActionDialog isOpen={addActionDialogOpen} onClose={onClose} kid_id={kid.id} selectedIds={[kid.id]} />}
+            {!edit && !redeem && <AddActionDialog isOpen={addActionDialogOpen} onClose={onClose} kid_id={kid.id} selectedIds={[kid.id]} />}
             {edit && <AddActionDialog isOpen={addActionDialogOpen} onClose={onClose} kid_id={kid.id} selectedLabel={selectedLabel} pastPoints={selectedPoints} edit={edit} action_id={selectedAction} redeem={false} />}
             {redeem && <AddActionDialog isOpen={addActionDialogOpen} onClose={onClose} kid_id={kid.id} selectedIds={[kid.id]} redeem={redeem} />}
             {showParent && <ParentDialog id={kid.parent_id} showParent={showParent} setShowParent={setShowParent} />}
